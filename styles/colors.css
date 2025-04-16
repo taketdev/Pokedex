@@ -1,0 +1,28 @@
+/* === POKÉMON TYP-FARBEN === */
+.type.normal     { background-color: #A8A77A; color: #fff; }
+.type.fire       { background-color: #EE8130; color: #fff; }
+.type.water      { background-color: #6390F0; color: #fff; }
+.type.electric   { background-color: #F7D02C; color: #000; }
+.type.grass      { background-color: #7AC74C; color: #fff; }
+.type.ice        { background-color: #96D9D6; color: #000; }
+.type.fighting   { background-color: #C22E28; color: #fff; }
+.type.poison     { background-color: #A33EA1; color: #fff; }
+.type.ground     { background-color: #E2BF65; color: #000; }
+.type.flying     { background-color: #A98FF3; color: #000; }
+.type.psychic    { background-color: #F95587; color: #fff; }
+.type.bug        { background-color: #A6B91A; color: #000; }
+.type.rock       { background-color: #B6A136; color: #000; }
+.type.ghost      { background-color: #735797; color: #fff; }
+.type.dragon     { background-color: #6F35FC; color: #fff; }
+.type.dark       { background-color: #705746; color: #fff; }
+.type.steel      { background-color: #B7B7CE; color: #000; }
+.type.fairy      { background-color: #D685AD; color: #000; }
+
+/* Stat Kreise */
+.stat.hp    { background-color: #78C850; color: #fff; } /* grün */
+.stat.atk   { background-color: #F08030; color: #fff; } /* orange */
+.stat.def   { background-color: #F8D030; color: #000; } /* gelb */
+.stat.spa   { background-color: #6890F0; color: #fff; } /* blau */
+.stat.spd   { background-color: #78C850; color: #fff; } /* grün */
+.stat.spe   { background-color: #F85888; color: #fff; } /* pink */
+.stat.total { background-color: #A8A77A; color: #fff; } /* grau/beige */

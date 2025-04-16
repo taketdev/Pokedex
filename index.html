@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./styles/kola.css">
     <link rel="stylesheet" href="./styles/pokemoncard.css">
+    <link rel="stylesheet" href="./styles/overlay.css">
     <link rel="icon" type="image/x-icon" href="./assets/favicon/snorlax.ico">
 </head>
 <body>
@@ -29,83 +30,18 @@
       </div>
 
     <div class="mainContainer">
-        <div class="card-container">
-            <div class="pokemon-card">
-              <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png" alt="Ivysaur" class="pokemon-img">
-              <p class="pokemon-number">N° 2</p>
-              <h2 class="pokemon-name">Ivysaur</h2>
-              <div class="pokemon-types">
-                <span class="type poison">Poison</span>
-                <span class="type grass">Grass</span>
-              </div>
-            </div>
+        <div class="card_container">
+          <div id="pokemon_container"></div> 
         </div>  
         
-        <div class="overlay">
-            <div class="detail-card">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png" class="detail-img">
-              
-                <p class="pokemon-number">N° 3</p>
-                <h2 class="pokemon-name">Venusaur</h2>
-              
-                <div class="pokemon-types">
-                  <span class="type poison">Poison</span>
-                  <span class="type grass">Grass</span>
-                </div>
-              
-                <h3>Pokedex Entry</h3>
-                <p class="entry">The plant blooms when it is absorbing solar energy. It stays on the move to seek sunlight.</p>
-              
-                <div class="info-section">
-                  <div class="info-bubble">
-                    <p class="label">Height</p>
-                    <p class="value">2m</p>
-                  </div>
-                  <div class="info-bubble">
-                    <p class="label">Weight</p>
-                    <p class="value">100kg</p>
-                  </div>
-                </div>
-              
-                <h3>Abilities</h3>
-                <div class="info-section">
-                  <div class="ability">Overgrow</div>
-                  <div class="ability">Chlorophyll</div>
-                </div>
-              
-                <h3>Stats</h3>
-                <div class="stats">
-                  <div class="stat hp"><span>HP</span><strong>82</strong></div>
-                  <div class="stat atk"><span>ATK</span><strong>80</strong></div>
-                  <div class="stat def"><span>DEF</span><strong>83</strong></div>
-                  <div class="stat spa"><span>SpA</span><strong>100</strong></div>
-                  <div class="stat spd"><span>SpD</span><strong>100</strong></div>
-                  <div class="stat spe"><span>SPD</span><strong>80</strong></div>
-                  <div class="stat total"><span>TOT</span><strong>525</strong></div>
-                </div>
-              
-                <h3>Evolution</h3>
-                <div class="evolution">
-                  <div class="evo-stage">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png">
-                    <p>Lv. 16</p>
-                  </div>
-                  <div class="evo-stage">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png">
-                    <p>Lv. 32</p>
-                  </div>
-                  <div class="evo-stage">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png">
-                    <p>Final</p>
-                  </div>
-                </div>
-              </div>
-              
-          </div>
+        <div class="overlay" id="overlay"></div>
+        <div id="pokemon_overlay" class="overlay"></div>
+      </div>
           
 
 
     </div>
-
+    <script src="./script.js"></script>
+    <script src="./scripts/render.js"></script>
 </body>
 </html>
