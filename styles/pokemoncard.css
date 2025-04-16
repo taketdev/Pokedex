@@ -25,6 +25,7 @@
     padding: 16px;
     font-family: sans-serif;
     position: relative;
+    cursor: pointer;
 }
 .pokemon_img{
     width: 100px;
