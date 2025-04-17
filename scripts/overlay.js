@@ -56,7 +56,8 @@ document.getElementById('pokemon_overlay').innerHTML = `
     </div>
 </div>`;
 
-    document.getElementById('pokemon_overlay').classList.remove('d_none');
+    const overlay = document.getElementById('pokemon_overlay');
+    overlay.classList.remove('d_none');
     document.body.style.overflow = 'hidden';
   
     getEvolutionHTML(name).then(evolutionHTML => {
@@ -103,7 +104,7 @@ async function getEvolutionHTML(pokemonName) {
 function closeOverlay(){
     const overlay = document.getElementById('pokemon_overlay');
     document.body.style.overflow = 'auto';
-    overlay.style.display = 'none';
+    overlay.classList.add('d_none');
     overlay.innerHTML = '';
 }
 
