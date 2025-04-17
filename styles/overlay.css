@@ -1,201 +1,170 @@
-/* === OVERLAY === */
 .overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  }
-  .d_none {
-    display: none;
-  }
-  .d_block {
-    display: block;
-  }
-  
-  /* === DETAIL CARD === */
-  .detail_card {
-    position: relative;
-    width: 90%;
-    max-width: 460px;
-    background-color: #fff;
-    border-radius: 20px;
-    padding: 2rem 1.5rem 5rem;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    overflow-y: auto;
-    max-height: 90vh;
-  }
-  
-  /* === TYP-HINTERGRUND === */
-  .type_bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 180px;
-    clip-path: ellipse(100% 80% at 50% 0%);
-    z-index: 0;
-  }
-  .grass-poison {
-    background: linear-gradient(to right, #78c850, #a040a0);
-  }
-  
-  /* === CLOSE BUTTON === */
-  .close_btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    z-index: 2;
-  }
-  
-  /* === IMAGE + NAME === */
-  .detail_img {
-    display: block;
-    width: 150px;
-    margin: 0 auto;
-    z-index: 1;
-    position: relative;
-  }
-  .pokemon_number,
-  .pokemon_name {
-    text-align: center;
-    z-index: 1;
-    position: relative;
-  }
-  .pokemon_name {
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
-  
-  /* === TYPEN === */
-  .pokemon_types {
-    text-align: center;
-    margin: 0.5rem 0 1rem;
-    z-index: 1;
-    position: relative;
-  }
-  .type {
-    display: inline-block;
-    background-color: #eee;
-    color: #333;
-    padding: 0.3rem 0.7rem;
-    margin: 0 0.3rem;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.9rem;
-  }
-  
-  /* === ENTRY === */
-  .entry {
-    font-style: italic;
-    margin: 1rem 0;
-    line-height: 1.4;
-  }
-  
-  /* === INFO SECTION: HEIGHT + WEIGHT === */
-  .info_section {
-    display: flex;
-    justify-content: space-around;
-    margin: 0.2rem 0;
-  }
-  .info_bubble {
-    background-color: #f0f0f0;
-    padding: 0.5rem 1rem;
-    border-radius: 15px;
-    text-align: center;
-  }
-  .label {
-    font-size: 0.8rem;
-    color: #777;
-  }
-  .value {
-    font-weight: bold;
-    font-size: 1rem;
-  }
-  
-  /* === ABILITIES === */
-  .ability {
-    background-color: #e0e0e0;
-    margin: 0.3rem 0;
-    padding: 0.5rem;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-  }
-  
-  /* === STATS (RUND) === */
-  .stats {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin: 0.5rem 0;
-  }
-  .stat {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: #f5f5f5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    text-align: center;
-  }
-  .stat span {
-    font-size: 0.7rem;
-    color: #777;
-    margin-bottom: 2px;
-  }
-  .stat strong {
-    font-size: 1.1rem;
-  }
-  
-  /* === EVOLUTION === */
-  .evolution {
-    display: flex;
-    justify-content: space-around;
-    margin: 0.5rem 0;
-  }
-  .evo_stage {
-    text-align: center;
-  }
-  .evo_stage img {
-    width: 60px;
-    margin-bottom: 0.3rem;
-  }
-  .evo_stage p {
-    font-size: 0.8rem;
-    color: #555;
-  }
-  
-  /* === PFEILE UNTEN === */
-  .nav_arrows {
-    position: absolute;
-    bottom: 15px;
-    left: 0; right: 0;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 2rem;
-    z-index: 2;
-  }
-  .arrow {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #555;
-  }
-  
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.d_none {
+  display: none;
+}  
+.detail_card {
+  position: relative;
+  width: 90%;
+  max-width: 460px;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 2rem 1.5rem 5rem;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  overflow-y: auto;
+  max-height: 90vh;
+}
+.type_bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  clip-path: ellipse(100% 80% at 50% 0%);
+  z-index: 0;
+}
+.close_btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  z-index: 2;
+}  
+.detail_img {
+  display: block;
+  width: 150px;
+  margin: 0 auto;
+  z-index: 1;
+  position: relative;
+}
+.pokemon_number,
+.pokemon_name {
+  text-align: center;
+  z-index: 1;
+  position: relative;
+}
+.pokemon_name {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+.pokemon_types {
+  text-align: center;
+  margin: 0.5rem 0 1rem;
+  z-index: 1;
+  position: relative;
+}
+.type {
+  display: inline-block;
+  background-color: #eee;
+  color: #333;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.entry {
+  font-style: italic;
+  margin: 1rem 0;
+  line-height: 1.4;
+}
+.info_section {
+  display: flex;
+  justify-content: space-around;
+  margin: 0.2rem 0;
+}
+.info_bubble {
+  background-color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  text-align: center;
+}
+.label {
+  font-size: 0.8rem;
+  color: #777;
+}
+.value {
+  font-weight: bold;
+  font-size: 1rem;
+}
+.ability {
+  background-color: #e0e0e0;
+  margin: 0.3rem 0;
+  padding: 0.5rem;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+.stat {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+}
+.stat span {
+  font-size: 0.7rem;
+  color: #777;
+  margin-bottom: 2px;
+}
+.stat strong {
+  font-size: 1.1rem;
+}
+.evolution {
+  display: flex;
+  justify-content: space-around;
+  margin: 0.5rem 0;
+}
+.evo_stage {
+  text-align: center;
+}
+.evo_stage img {
+  width: 60px;
+  margin-bottom: 0.3rem;
+}
+.evo_stage p {
+  font-size: 0.8rem;
+  color: #555;
+}
+.nav_arrows {
+  position: absolute;
+  bottom: 15px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 2;
+}
+.arrow {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #555;
+}
