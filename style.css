@@ -4,7 +4,7 @@
     font-family: 'Kola-Regular', sans-serif;
 }
 .mainContainer{
-    max-width: 1920px;
+    max-width: 1080px;
     margin: 0 auto;
 }
 header{
@@ -38,8 +38,6 @@ header a{
     text-decoration: none;
     color: inherit;
 }
-
-/* Search */
 .searchContainer{
     display: flex;
     align-items: center;
