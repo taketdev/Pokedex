@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./styles/kola.css">
     <link rel="stylesheet" href="./styles/pokemoncard.css">
     <link rel="stylesheet" href="./styles/overlay.css">
+    <link rel="stylesheet" href="./styles/colors.css">
     <link rel="icon" type="image/x-icon" href="./assets/favicon/snorlax.ico">
 </head>
 <body>
@@ -30,16 +31,17 @@
       </div>
 
     <div class="mainContainer">
-        <div class="card_container">
-          <div id="pokemon_container"></div> 
-        </div>
-        
-
+      <div class="card_container">
+        <div id="pokemon_container"></div> 
       </div>
+    </div>
 
-      <div id="pokemon_overlay" class="overlay d_none"></div>
+    <button id="load_more_button" onclick="loadMore()" style="display: block; margin: 2rem auto;">Load more Pokemon</button>
+
+    <div id="pokemon_overlay" class="overlay d_none"></div>
           
     <script src="./script.js"></script>
     <script src="./scripts/render.js"></script>
+    <script src="./scripts/overlay.js"></script>
 </body>
 </html>
