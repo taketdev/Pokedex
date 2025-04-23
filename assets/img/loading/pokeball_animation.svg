@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="70" viewBox="0 0 200 70">
+
+  <!-- Erster Pokéball bei (35,35) -->
+  <g transform="translate(35 35)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="2s" repeatCount="indefinite"></animateTransform>
+      <circle cx="0" cy="0" r="25" fill="none" stroke="#555" stroke-width="3"></circle>
+      <path d="M-25,0 a25,25 0 0,1 50,0 L25,0 a25,25 0 0,0 -50,0Z" fill="#999"></path>
+      <path d="M-25,0 a25,25 0 0,0 50,0 L25,0 a25,25 0 0,1 -50,0Z" fill="#ccc"></path>
+      <line x1="-25" y1="0" x2="25" y2="0" stroke="#555" stroke-width="3"></line>
+      <circle cx="0" cy="0" r="7" fill="#555"></circle>
+      <circle cx="0" cy="0" r="4" fill="transparent"></circle>
+    </g>
+  </g>
+
+  <!-- Zweiter Pokéball bei (100,35) -->
+  <g transform="translate(100 35)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="2s" repeatCount="indefinite"></animateTransform>
+      <circle cx="0" cy="0" r="25" fill="none" stroke="#555" stroke-width="3"></circle>
+      <path d="M-25,0 a25,25 0 0,1 50,0 L25,0 a25,25 0 0,0 -50,0Z" fill="#999"></path>
+      <path d="M-25,0 a25,25 0 0,0 50,0 L25,0 a25,25 0 0,1 -50,0Z" fill="#ccc"></path>
+      <line x1="-25" y1="0" x2="25" y2="0" stroke="#555" stroke-width="3"></line>
+      <circle cx="0" cy="0" r="7" fill="#555"></circle>
+      <circle cx="0" cy="0" r="4" fill="transparent"></circle>
+    </g>
+  </g>
+
+  <!-- Dritter Pokéball bei (165,35) -->
+  <g transform="translate(165 35)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="2s" repeatCount="indefinite"></animateTransform>
+      <circle cx="0" cy="0" r="25" fill="none" stroke="#555" stroke-width="3"></circle>
+      <path d="M-25,0 a25,25 0 0,1 50,0 L25,0 a25,25 0 0,0 -50,0Z" fill="#999"></path>
+      <path d="M-25,0 a25,25 0 0,0 50,0 L25,0 a25,25 0 0,1 -50,0Z" fill="#ccc"></path>
+      <line x1="-25" y1="0" x2="25" y2="0" stroke="#555" stroke-width="3"></line>
+      <circle cx="0" cy="0" r="7" fill="#555"></circle>
+      <circle cx="0" cy="0" r="4" fill="transparent"></circle>
+    </g>
+  </g>
+
+</svg>

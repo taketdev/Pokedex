@@ -46,7 +46,7 @@ document.getElementById('pokemon_overlay').innerHTML = `
   
         <h3>Evolution</h3>
         <div class="evolution">
-            <p class="loading">Loading evolution...</p>
+            <div class="pokemon_ball loading"></div>
         </div>
 
         <div class="nav_arrows">

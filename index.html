@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./styles/pokemoncard.css">
     <link rel="stylesheet" href="./styles/overlay.css">
     <link rel="stylesheet" href="./styles/colors.css">
+    <link rel="stylesheet" href="./styles/pokemon_ball.css">
     <link rel="icon" type="image/x-icon" href="./assets/favicon/snorlax.ico">
 </head>
 <body>
@@ -21,7 +22,7 @@
           <img src="./assets/img/logos/snorlax.png" alt="Snorlax Logo">
         </div>
         <div class="headerRight">
-          <a href="">PokeAPI</a>
+          <a href="https://pokeapi.co/">PokeAPI</a>
         </div>
       </header>
     
@@ -36,12 +37,17 @@
       </div>
     </div>
 
-    <button id="load_more_button" onclick="loadMore()" style="display: block; margin: 2rem auto;">Load more Pokemon</button>
+    <div id="pokemon_loader" class="loader_container">
+      <img src="./assets/img/loading/pokeball_animation.svg" alt="Lädt…" class="loader-svg">
+    </div>
+
+    <button id="load_more_button" onclick="loadMore()" class="simple_button">Load more Pokemon</button>
 
     <div id="pokemon_overlay" class="overlay d_none"></div>
           
     <script src="./script.js"></script>
     <script src="./scripts/render.js"></script>
     <script src="./scripts/overlay.js"></script>
+    <script src="./scripts/search.js"></script>
 </body>
 </html>
