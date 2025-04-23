@@ -9,8 +9,9 @@
 }
 header{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 25px;
     height: 84px;
     background-color: #898989;
     color: white;
