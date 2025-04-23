@@ -46,7 +46,7 @@ document.getElementById('pokemon_overlay').innerHTML = `
   
         <h3>Evolution</h3>
         <div class="evolution">
-            <div class="pokemon_ball loading"></div>
+            <img src="./assets/img/loading/pokeball_animation.svg" alt="Lädt…" class="loader-svg">
         </div>
 
         <div class="nav_arrows">
