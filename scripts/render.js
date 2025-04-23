@@ -2,8 +2,8 @@ const pokemonContainer = document.getElementById('pokemon_container');
 const loadedPokemon = [];
 
 async function loadAndRenderPokemons() {
-  const limit = 25;
-  const offset = loadedPokemons.length;  // überspringe schon geladene Pokémon
+  const limit = 50;
+  const offset = loadedPokemons.length;
 
   const response = await fetch(
     `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
@@ -20,7 +20,6 @@ async function loadAndRenderPokemons() {
     const t1   = poke.types[0]?.type.name;
     const t2   = poke.types[1]?.type.name || '';
 
-    // Karte anhängen
     document.getElementById('pokemon_container').innerHTML += `
       <div class="pokemon_card" onclick="showOverlay(${loadedPokemons.length - 1})">
         <img src="${img}" alt="${name}" class="pokemon_img">
@@ -35,17 +34,19 @@ async function loadAndRenderPokemons() {
   }
 }
 
-
-// Neue Funktion fürs Nachladen
 async function loadMore() {
-  const btn = document.getElementById('load_more_button');
-  btn.disabled   = true;
-  btn.innerText  = 'Lädt…';
+  const loader = document.getElementById('pokemon_loader');
+  const btn    = document.getElementById('load_more_button');
+
+  loader.style.display = 'flex';
+  btn.disabled          = true;
+  btn.innerText         = 'Lädt…';
 
   await loadAndRenderPokemons();
 
-  btn.disabled   = false;
-  btn.innerText  = 'Mehr Pokémon laden';
+  btn.disabled          = false;
+  btn.innerText         = 'Mehr Pokémon laden';
+  loader.style.display  = 'none';
 }
 
 loadAndRenderPokemons();
