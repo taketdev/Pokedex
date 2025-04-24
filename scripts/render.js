@@ -1,36 +1,39 @@
-const pokemonContainer = document.getElementById('pokemon_container');
-const loadedPokemon = [];
-
-async function loadAndRenderPokemons() {
-  const limit = 50;
-  const offset = loadedPokemons.length;
-
+async function fetchPokemons(limit, offset) {
   const response = await fetch(
     `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
   );
   const data = await response.json();
+  return data.results;
+}
 
-  for (const p of data.results) {
-    const poke = await fetch(p.url).then(res => res.json());
-    loadedPokemons.push(poke);
+function renderCardTemplate(poke, index) {
+  const { name, id, sprites, types } = poke;
+  const img = sprites.other['official-artwork'].front_default;
+  const [t1 = '', t2 = ''] = types.map(t => t.type.name);
 
-    const name = poke.name;
-    const id   = poke.id;
-    const img  = poke.sprites.other['official-artwork'].front_default;
-    const t1   = poke.types[0]?.type.name;
-    const t2   = poke.types[1]?.type.name || '';
-
-    document.getElementById('pokemon_container').innerHTML += `
-      <div class="pokemon_card" onclick="showOverlay(${loadedPokemons.length - 1})">
-        <img src="${img}" alt="${name}" class="pokemon_img">
-        <p class="pokemon_number">N° ${id}</p>
-        <h2 class="pokemon_name">${name}</h2>
-        <div class="pokemon_types">
-          <span class="type ${t1}">${t1}</span>
-          ${ t2 ? `<span class="type ${t2}">${t2}</span>` : '' }
-        </div>
+  return `
+    <div class="pokemon_card" onclick="showOverlay(${index})">
+      <img src="${img}" alt="${name}" class="pokemon_img">
+      <p class="pokemon_number">N° ${id}</p>
+      <h2 class="pokemon_name">${name}</h2>
+      <div class="pokemon_types">
+        <span class="type ${t1}">${t1}</span>
+        ${t2 ? `<span class="type ${t2}">${t2}</span>` : ''}
       </div>
-    `;
+    </div>
+  `;
+}
+
+async function loadAndRenderPokemons() {
+  const container = document.getElementById('pokemon_container');
+  const limit = 5;
+  const offset = loadedPokemons.length;
+  const results = await fetchPokemons(limit, offset);
+
+  for (const { url } of results) {
+    const poke = await fetch(url).then(res => res.json());
+    loadedPokemons.push(poke);
+    container.innerHTML += renderCardTemplate(poke, loadedPokemons.length - 1);
   }
 }
 
