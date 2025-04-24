@@ -9,10 +9,22 @@
     <link rel="stylesheet" href="./styles/pokemoncard.css">
     <link rel="stylesheet" href="./styles/overlay.css">
     <link rel="stylesheet" href="./styles/colors.css">
+    <link rel="stylesheet" href="./styles/landing.css">
     <link rel="icon" type="image/x-icon" href="./assets/favicon/snorlax.ico">
 </head>
 <body>
 
+  <div id="landingContainer" class="landingContainer">
+    <div class="topHalf" id="topHalf">
+      <div class="topBlackBar"></div>
+    </div>
+    <div class="bottomHalf" id="bottomHalf">
+      <div class="bottomBlackBar"></div>
+    </div>
+    <div class="circle" id="enterBtn">Enter</div>
+  </div>
+
+  <div id="appContent" class="d_none">
     <header>
         <div class="headerLeft">
             <h1>Pokédex</h1>
@@ -46,10 +58,14 @@
     </div>
 
     <div id="pokemon_overlay" class="overlay d_none"></div>
-          
+
+  </div>
+    
+    <script src="./scripts/landing.js"></script>
     <script src="./script.js"></script>
     <script src="./scripts/render.js"></script>
     <script src="./scripts/overlay.js"></script>
     <script src="./scripts/search.js"></script>
+
 </body>
 </html>

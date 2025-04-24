@@ -9,4 +9,7 @@ document.getElementById('pokemon_container').addEventListener('click', e => {
       openOverlay(loadedPokemons[index]);
     }
   });
-  
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof loadMore === "function") loadMore();
+  });

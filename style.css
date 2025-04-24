@@ -116,7 +116,8 @@ header a{
     text-align: center;
     margin: 40px 0;
     position: relative;
-    padding-bottom: 1000px;
+    padding-top: 25px;
+    padding-bottom: 50px;
 }
 .loader_overlay{
     display: none;
