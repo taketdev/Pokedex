@@ -85,8 +85,6 @@ header a{
     width: 152px; 
     height: auto;
 }
-
-
 .btn {
     display: inline-flex;
     align-items: center;
@@ -98,7 +96,6 @@ header a{
     border: none;
     transition: transform 0.1s, box-shadow 0.1s;
 }
-  
 .btn_load_more{
     padding: 12px 28px;
     border-radius: 40px;
