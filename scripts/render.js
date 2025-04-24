@@ -73,5 +73,3 @@ async function loadMore() {
     toggleLoading(false);
   }
 }
-
-loadAndRenderPokemons();
