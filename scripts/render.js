@@ -38,19 +38,40 @@ async function loadAndRenderPokemons() {
   }
 }
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+function toggleLoading(on) {
+  const loader = document.querySelector('.loader_container');
+  const btn    = document.querySelector('.btn_load_more');
+  loader.style.display = on ? 'flex' : 'none';
+  btn.disabled          = on;
+  btn.textContent       = on ? 'Lädt…' : 'Mehr Pokémon laden';
+}
+
+async function fetchBatch(limit = 20) {
+  const offset  = loadedPokemons.length;
+  const results = await fetchPokemons(limit, offset);
+  return Promise.all(results.map(({url}) => fetch(url).then(r => r.json())));
+}
+
+function renderBatch(pokemons) {
+  const container  = document.getElementById('pokemon_container');
+  const startIndex = loadedPokemons.length;
+  loadedPokemons.push(...pokemons);
+  const html = pokemons.map((p,i) => renderCardTemplate(p, startIndex + i)).join('');
+  container.insertAdjacentHTML('beforeend', html);
+}
+
 async function loadMore() {
-  const loader = document.getElementById('pokemon_loader');
-  const btn    = document.getElementById('load_more_button');
-
-  loader.style.display = 'flex';
-  btn.disabled          = true;
-  btn.innerText         = 'Lädt…';
-
-  await loadAndRenderPokemons();
-
-  btn.disabled          = false;
-  btn.innerText         = 'Mehr Pokémon laden';
-  loader.style.display  = 'none';
+  toggleLoading(true);
+  try {
+    const [newPokemons] = await Promise.all([fetchBatch(), delay(1000)]);
+    renderBatch(newPokemons);
+  } catch (err) {
+    console.error('Fehler beim Nachladen:', err);
+  } finally {
+    toggleLoading(false);
+  }
 }
 
 loadAndRenderPokemons();
