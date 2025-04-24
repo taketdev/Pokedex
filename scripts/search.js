@@ -1,36 +1,25 @@
-// 1. Referenzen auf Input und Button
 const searchInput  = document.querySelector('.searchInput');
 const searchButton = document.querySelector('.searchButton');
+const container    = document.getElementById('pokemon_container');
 
-// 2. Hilfsfunktion zum (re-)Rendern einer Liste von Pokémon
 function renderList(pokemons) {
-  pokemonContainer.innerHTML = '';
-  pokemons.forEach((poke, i) => {
-    pokemonContainer.innerHTML += `
-      <div class="pokemon_card" onclick="showOverlay(${loadedPokemons.indexOf(poke)})">
-        <img src="${poke.sprites.other['official-artwork'].front_default}" class="pokemon_img">
-        <p class="pokemon_number">N° ${poke.id}</p>
-        <h2 class="pokemon_name">${poke.name}</h2>
-        <div class="pokemon_types">
-          <span class="type ${poke.types[0].type.name}">${poke.types[0].type.name}</span>
-          ${poke.types[1]?`<span class="type ${poke.types[1].type.name}">${poke.types[1].type.name}</span>`:``}
-        </div>
-      </div>`;
+  container.innerHTML = '';
+  pokemons.forEach(poke => {
+    const idx = loadedPokemons.indexOf(poke);
+    container.innerHTML += renderCardTemplate(poke, idx);
   });
 }
 
-// 3. Filter-Logik, ab 3 Zeichen suchen, bei 0 Zeichen alles anzeigen
 function handleSearch() {
-  const q = searchInput.value.trim().toLowerCase();
-  if (q.length >= 3) {
-    const filtered = loadedPokemons.filter(p => p.name.toLowerCase().includes(q));
+  const query = searchInput.value.trim().toLowerCase();
+
+  if (query.length >= 3) {
+    const filtered = loadedPokemons.filter(p => p.name.toLowerCase().includes(query));
     renderList(filtered);
-  }
-  else if (q.length === 0) {
+  } else if (query.length === 0) {
     renderList(loadedPokemons);
   }
 }
 
-// 4. Events binden
 searchInput.addEventListener('input',  handleSearch);
 searchButton.addEventListener('click', handleSearch);
