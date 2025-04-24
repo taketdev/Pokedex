@@ -16,6 +16,7 @@
     margin-top: 60px;
 }
 .pokemon_card{
+    position: relative;
     width: 200px;
     height: 180px;
     background-color: #f9f9fb;
@@ -30,6 +31,17 @@
 }
 .pokemon_card:hover{
     transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+.type_bg {
+    position: absolute;
+    top: 5%;
+    left: 2%;
+    width: 97%;
+    height: 84%;
+    border-radius: 87%;
+    opacity: 0.4; 
+    z-index: 0;
     box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 .pokemon_img{

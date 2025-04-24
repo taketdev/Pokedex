@@ -12,8 +12,9 @@ function renderCardTemplate(poke, index) {
   const [t1 = '', t2 = ''] = types.map(t => t.type.name);
 
   return `
-    <div class="pokemon_card" onclick="showOverlay(${index})">
-      <img src="${img}" alt="${name}" class="pokemon_img">
+   <div class="pokemon_card ${t1}" onclick="showOverlay(${index})">
+      <div class="type_bg type ${t1}"></div>
+      <img src="${img}" alt="${name}" class="pokemon_img pokemon_img ${t1}">
       <p class="pokemon_number">N° ${id}</p>
       <h2 class="pokemon_name">${name}</h2>
       <div class="pokemon_types">
@@ -26,7 +27,7 @@ function renderCardTemplate(poke, index) {
 
 async function loadAndRenderPokemons() {
   const container = document.getElementById('pokemon_container');
-  const limit = 25;
+  const limit = 20;
   const offset = loadedPokemons.length;
   const results = await fetchPokemons(limit, offset);
 
