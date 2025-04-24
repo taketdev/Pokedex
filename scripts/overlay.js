@@ -9,8 +9,7 @@ function getOverlayData(index) {
     const abilities = poke.abilities.map(a => a.ability.name);
     const stats = poke.stats.map(s => s.base_stat);
     const statNames = ['HP', 'ATK', 'DEF', 'SpA', 'SpD', 'SPD'];
-    const statHTML = stats.map((val, i) => `<div class="stat ${statNames[i].toLowerCase()}">` +
-        `<span>${statNames[i]}</span><strong>${val}</strong></div>`).join('');
+    const statHTML = stats.map((val, i) => `<div class="stat ${statNames[i].toLowerCase()}">` + `<span>${statNames[i]}</span><strong>${val}</strong></div>`).join('');
     const total = stats.reduce((a, b) => a + b, 0);
     const typeHTML = types.map(type => `<span class="type ${type}">${type}</span>`).join('');
     const abilityHTML = abilities.map(a => `<div class="ability">${a}</div>`).join('');

@@ -26,7 +26,7 @@ function renderCardTemplate(poke, index) {
 
 async function loadAndRenderPokemons() {
   const container = document.getElementById('pokemon_container');
-  const limit = 5;
+  const limit = 25;
   const offset = loadedPokemons.length;
   const results = await fetchPokemons(limit, offset);
 
