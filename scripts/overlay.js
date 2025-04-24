@@ -58,52 +58,55 @@ document.getElementById('pokemon_overlay').innerHTML = `
     }
 
 function showOverlay(index) {
-    const data = getOverlayData(index);
-    renderOverlayTemplate(data, index);
+  const data = getOverlayData(index);
+  renderOverlayTemplate(data, index);
 
-    const overlay = document.getElementById('pokemon_overlay');
-    overlay.classList.remove('d_none');
-    document.body.style.overflow = 'hidden';
+  const overlay = document.getElementById('pokemon_overlay');
+  overlay.classList.remove('d_none');
+  document.body.style.overflow = 'hidden';
       
-    getEvolutionHTML(data.name).then(evolutionHTML => {
-      document.querySelector('.evolution').innerHTML = evolutionHTML;
-    });
-    }
+  getEvolutionHTML(data.name).then(evolutionHTML => {
+    document.querySelector('.evolution').innerHTML = evolutionHTML;
+  });
+  }
 
-async function getEvolutionHTML(pokemonName) {
-    const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`);
-    const speciesData = await speciesRes.json();
-    const evoUrl = speciesData.evolution_chain.url;
-      
-    const evoRes = await fetch(evoUrl);
-    const evoData = await evoRes.json();
-      
-    const evoStages = [];
-    let evoChain = evoData.chain;
-    while (evoChain) {
-      const name = evoChain.species.name;
-      const level = evoChain.evolution_details?.[0]?.min_level || null;
-      evoStages.push({ name, level });
-      evoChain = evoChain.evolves_to[0];
+async function fetchEvolutionChain(pokemonName) {
+  const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`);
+  const { evolution_chain: { url } } = await speciesRes.json();
+  const chainRes = await fetch(url);
+    return (await chainRes.json()).chain;
+  }
+    
+function extractStages(chain) {
+  const stages = [];
+    let node = chain;
+    while (node) {
+      const name = node.species.name;
+      const level = node.evolution_details?.[0]?.min_level || null;
+      stages.push({ name, level });
+      node = node.evolves_to[0];
     }
-      
-    const evoHTMLParts = await Promise.all(
-      evoStages.map(async ({ name, level }, index) => {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-        const data = await res.json();
-        const img = data.sprites.other['official-artwork'].front_default;
-        const label = level ? `Lv. ${level}` : (index === evoStages.length - 1 ? "Final" : "Base");
-        return `
-          <div class="evo_stage">
-            <img src="${img}">
-            <p>${label}</p>
-          </div>
-        `;
-      })
+    return stages;
+  }
+    
+async function buildEvolutionHTML(stages) {
+  const parts = await Promise.all(
+    stages.map(async ({ name, level }, i, arr) => {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+    const data = await res.json();
+    const img = data.sprites.other['official-artwork'].front_default;
+    const label = level ? `Lv. ${level}` : (i === arr.length - 1 ? 'Final' : 'Base');
+    return `<div class=\"evo_stage\"><img src=\"${img}\"><p>${label}</p></div>`;
+    })
     );
-      
-    return evoHTMLParts.join('');
-    }
+    return parts.join('');
+  }
+    
+async function getEvolutionHTML(pokemonName) {
+  const chain = await fetchEvolutionChain(pokemonName);
+  const stages = extractStages(chain);
+  return buildEvolutionHTML(stages);
+}
       
 function closeOverlay() {
     const overlay = document.getElementById('pokemon_overlay');
