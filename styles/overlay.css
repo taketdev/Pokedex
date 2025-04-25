@@ -86,6 +86,7 @@
   font-style: italic;
   margin: 1rem 0;
   line-height: 1.4;
+  text-align: center;
 }
 .info_section {
   display: flex;

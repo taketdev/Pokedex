@@ -32,7 +32,7 @@ document.getElementById('pokemon_overlay').innerHTML = `
           <h2 class="pokemon_name">${name}</h2>
         <div class="pokemon_types">${typeHTML}</div>
           <h3>Pokedex Entry</h3>
-          <p class="entry">Hier könnte ein Eintrag stehen</p>
+          <p class="entry">Coming soon...</p>
         <div class="info_section">
             <div class="info_bubble"><p class="label">Height</p><p class="value">${height}</p></div>
             <div class="info_bubble"><p class="label">Weight</p><p class="value">${weight}</p></div>
