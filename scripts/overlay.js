@@ -28,7 +28,7 @@ document.getElementById('pokemon_overlay').innerHTML = `
             <button class="close_btn" onclick="closeOverlay()">x</button>
         <div class="type_bg ${typeClass}"></div>
           <img src="${img}" class="detail_img">
-          <p class="pokemon_number">N° ${id}</p>
+          <p class="pokemon_number_overlay">N° ${id}</p>
           <h2 class="pokemon_name">${name}</h2>
         <div class="pokemon_types">${typeHTML}</div>
           <h3>Pokedex Entry</h3>
