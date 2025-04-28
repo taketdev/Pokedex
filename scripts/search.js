@@ -57,7 +57,6 @@ async function handleSearch() {
 
 async function setup() {
   await loadAllPokemonNames();
-  // Kein EventListener mehr nötig
 }
 
 setup();
