@@ -1,6 +1,6 @@
 let allPokemonList = [];
-const searchInput = document.querySelector('.searchInput');
-const searchButton = document.querySelector('.searchButton');
+const searchInput = document.getElementById('searchInput');
+const searchButton = document.getElementById('searchButton');
 const container = document.getElementById('pokemon_container');
 
 async function loadAllPokemonNames() {
@@ -27,23 +27,37 @@ async function fetchDetails(urls) {
   return Promise.all(urls.map(u => fetch(u).then(r => r.json())));
 }
 
+function setLoadMoreVisible(visible) {
+  const loadMoreButton = document.getElementById('load_more_button');
+  loadMoreButton.style.display = visible ? 'block' : 'none';
+}
+
 async function handleSearch() {
   const q = searchInput.value.trim().toLowerCase();
+
   if (q.length >= 3) {
-    toggleLoading?.(true);
+    setLoadMoreVisible(false);
+    toggleLoading(true);
     const urls = getMatches(q);
+
+    if (urls.length === 0) {
+      container.innerHTML = '<p style="text-align: center; margin-top: 20px;">No Pokémon found.</p>';
+      toggleLoading(false);
+      return;
+    }
+
     const results = await fetchDetails(urls);
     renderList(results);
-    toggleLoading?.(false);
+    toggleLoading(false);
   } else if (q.length === 0) {
     renderList(loadedPokemons);
+    setLoadMoreVisible(true);
   }
 }
 
-function setup() {
-  loadAllPokemonNames();
-  searchInput.addEventListener('input', handleSearch);
-  searchButton.addEventListener('click', handleSearch);
+async function setup() {
+  await loadAllPokemonNames();
+  // Kein EventListener mehr nötig
 }
 
 setup();

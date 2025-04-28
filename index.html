@@ -34,9 +34,9 @@
       </header>
     
       <div class="searchContainer">
-        <input type="text" placeholder="Search your Pokémon" class="searchInput">
-        <button class="searchButton">🔍</button>
-      </div>
+        <input type="text" id="searchInput" placeholder="Search your Pokémon" class="searchInput" oninput="handleSearch()">
+        <button id="searchButton" class="searchButton" onclick="handleSearch()">🔍</button>
+      </div>      
 
     <div class="mainContainer">
       <div class="card_container">
