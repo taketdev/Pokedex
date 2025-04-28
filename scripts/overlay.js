@@ -31,8 +31,6 @@ document.getElementById('pokemon_overlay').innerHTML = `
           <p class="pokemon_number_overlay">N° ${id}</p>
           <h2 class="pokemon_name">${name}</h2>
         <div class="pokemon_types">${typeHTML}</div>
-          <h3>Pokedex Entry</h3>
-          <p class="entry">Coming soon...</p>
         <div class="info_section">
             <div class="info_bubble"><p class="label">Height</p><p class="value">${height}</p></div>
             <div class="info_bubble"><p class="label">Weight</p><p class="value">${weight}</p></div>
@@ -44,13 +42,14 @@ document.getElementById('pokemon_overlay').innerHTML = `
             ${statHTML}
         <div class="stat total"><span>TOT</span><strong>${total}</strong></div>
         </div>
+        
           <h3>Evolution</h3>
         <div class="evolution">
             <img src="./assets/img/loading/pokeball_animation.svg" alt="Lädt…" class="loader-svg">
         </div>
         <div class="nav_arrows">
-            <button class="arrow left" onclick="prevPokemon(${index})">←</button>
-            <button class="arrow right" onclick="nextPokemon(${index})">→</button>
+            <button id="prevBtn" class="arrow left" onclick="prevPokemon(${index})">←</button>
+            <button id="nextBtn" class="arrow right" onclick="nextPokemon(${index})">→</button>
         </div>
         </div>
     </div>`;
@@ -67,27 +66,28 @@ function showOverlay(index) {
   getEvolutionHTML(data.name).then(evolutionHTML => {
     document.querySelector('.evolution').innerHTML = evolutionHTML;
   });
-  }
+  updateArrowButtons(index);
+}
 
 async function fetchEvolutionChain(pokemonName) {
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`);
   const { evolution_chain: { url } } = await speciesRes.json();
   const chainRes = await fetch(url);
     return (await chainRes.json()).chain;
-  }
+}
     
 function extractStages(chain) {
   const stages = [];
-    let node = chain;
-    while (node) {
-      const name = node.species.name;
-      const level = node.evolution_details?.[0]?.min_level || null;
-      stages.push({ name, level });
-      node = node.evolves_to[0];
-    }
-    return stages;
+  let node = chain;
+  while (node) {
+  const name = node.species.name;
+  const level = node.evolution_details?.[0]?.min_level || null;
+  stages.push({ name, level });
+  node = node.evolves_to[0];
   }
-    
+  return stages;
+} 
+
 async function buildEvolutionHTML(stages) {
   const parts = await Promise.all(
     stages.map(async ({ name, level }, i, arr) => {
@@ -97,33 +97,46 @@ async function buildEvolutionHTML(stages) {
     const label = level ? `Lv. ${level}` : (i === arr.length - 1 ? 'Final' : 'Base');
     return `<div class=\"evo_stage\"><img src=\"${img}\"><p>${label}</p></div>`;
     })
-    );
-    return parts.join('');
-  }
-    
+  );
+  return parts.join('');
+}
+
 async function getEvolutionHTML(pokemonName) {
   const chain = await fetchEvolutionChain(pokemonName);
   const stages = extractStages(chain);
   return buildEvolutionHTML(stages);
-}
-      
+} 
+
 function closeOverlay() {
-    const overlay = document.getElementById('pokemon_overlay');
-    document.body.style.overflow = 'auto';
-    overlay.classList.add('d_none');
-    overlay.innerHTML = '';
-    }
-      
+  const overlay = document.getElementById('pokemon_overlay');
+  document.body.style.overflow = 'auto';
+  overlay.classList.add('d_none');
+  overlay.innerHTML = '';
+} 
+
 function closeOverlayOnOutsideClick(event) {
-    if (event.target.id === 'overlay_click_area')
-      closeOverlay();
-    }
-      
+  if (event.target.id === 'overlay_click_area')
+  closeOverlay();
+}  
+
+function updateArrowButtons(index) {
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  
+  prevBtn.disabled = index <= 0;
+  nextBtn.disabled = index >= loadedPokemons.length - 1;
+}
+
 function prevPokemon(index) {
-    if (index > 0) showOverlay(index - 1);
-    }
-      
+  if (index > 0) {
+    showOverlay(index - 1);
+    updateArrowButtons(index - 1);
+  }
+}
+
 function nextPokemon(index) {
-    if (index < loadedPokemons.length - 1) showOverlay(index + 1);
-    }
-            
+  if (index < loadedPokemons.length - 1) {
+    showOverlay(index + 1);
+    updateArrowButtons(index + 1);
+  }
+}

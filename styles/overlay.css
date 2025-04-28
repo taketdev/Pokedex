@@ -17,7 +17,7 @@
   max-width: 460px;
   background-color: #fff;
   border-radius: 20px;
-  padding: 2rem 1.5rem 3rem;
+  padding: 1rem 1.5rem 1rem;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
   overflow-y: auto;
   max-height: 90vh;
@@ -69,7 +69,7 @@
 }
 .pokemon_types {
   text-align: center;
-  margin: 0.5rem 0 1rem;
+  margin: 0.5rem 0 0.5rem;
   z-index: 1;
   position: relative;
 }
@@ -175,4 +175,9 @@
   font-size: 2rem;
   cursor: pointer;
   color: #555;
+}
+button.arrow:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }

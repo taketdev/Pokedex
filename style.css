@@ -8,8 +8,6 @@
     margin: 0 auto;
 }
 header{
-    display: flex;
-    justify-content: center;
     background-color: #898989;
     color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -17,9 +15,7 @@ header{
 .headerCenter{
     display: flex;
     align-items: center;
-    text-align: center;
     justify-content: space-around;
-    gap: 25px;
 }
 header img{
     width: 64px;

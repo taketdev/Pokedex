@@ -44,8 +44,8 @@ function toggleLoading(on) {
   const loader = document.querySelector('.loader_container');
   const btn    = document.querySelector('.btn_load_more');
   loader.style.display = on ? 'flex' : 'none';
-  btn.disabled          = on;
-  btn.textContent       = on ? 'Loading…' : 'Load more Pokémon';
+  btn.disabled = on;
+  btn.textContent = on ? 'Loading…' : 'Load more Pokémon';
 }
 
 async function fetchBatch(limit = 20) {
