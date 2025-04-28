@@ -181,3 +181,23 @@ button.arrow:disabled{
   cursor: not-allowed;
   pointer-events: none;
 }
+
+
+@media (max-width: 420px) {
+  .detail_img{
+    width: 110px;
+  }
+  .pokemon_name{
+    font-size: 1.4rem;
+  }
+  .info_bubble{
+    padding: 0.5rem;
+  }
+  .stat{
+    width: 60px;
+    height: 60px;
+  }
+  .evo_stage img{
+    width: 50px;
+  }
+}
