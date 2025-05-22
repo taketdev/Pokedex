@@ -45,7 +45,25 @@ header a{
     padding: 10px;
     background: transparent;
     color: #333;
-} 
+}
+.searchContainer {
+  position: relative;
+  width: 100%;
+}
+.clear_button {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #999;
+}
+.clear_button:hover {
+  color: #333;
+}
 .searchButton{
     background: #e05b4f;
     border: none;
