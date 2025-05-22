@@ -102,10 +102,20 @@ async function buildEvolutionHTML(stages) {
 }
 
 async function getEvolutionHTML(pokemonName) {
-  const chain = await fetchEvolutionChain(pokemonName);
-  const stages = extractStages(chain);
-  return buildEvolutionHTML(stages);
-} 
+  try {
+    const chain = await fetchEvolutionChain(pokemonName);
+    const stages = extractStages(chain);
+
+    if (stages.length <= 1) {
+      return `<p class="no-evolution-msg">Unfortunately, no evolution was found.</p>`;
+    }
+
+    return await buildEvolutionHTML(stages);
+  } catch (error) {
+    console.error('Error loading Evolution:', error);
+    return `<p class="no-evolution-msg">Unfortunately, no evolution was found.</p>`;
+  }
+}
 
 function closeOverlay() {
   const overlay = document.getElementById('pokemon_overlay');
