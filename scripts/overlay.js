@@ -56,23 +56,26 @@ document.getElementById('pokemon_overlay').innerHTML = `
 
 function showOverlay(index) {
   let data;
-  if (searchInput.value.trim().length >= 3) {
+  const isSearch = searchInput.value.trim().length >= 3;
+  
+  if (isSearch) {
     data = searchResults[index];
   } else {
     data = loadedPokemons[index];
   }
-
+  
   const pokeData = getOverlayData(data);
   renderOverlayTemplate(pokeData, index);
-
+  
   const overlay = document.getElementById('pokemon_overlay');
   overlay.classList.remove('d_none');
   document.body.style.overflow = 'hidden';
-
+      
   getEvolutionHTML(data.name).then(evolutionHTML => {
     document.querySelector('.evolution').innerHTML = evolutionHTML;
   });
-  updateArrowButtons(index);
+  
+  updateArrowButtons(index, isSearch);
 }
 
 async function fetchEvolutionChain(pokemonName) {
@@ -135,24 +138,29 @@ function closeOverlayOnOutsideClick(event) {
   closeOverlay();
 }  
 
-function updateArrowButtons(index) {
+function updateArrowButtons(index, isSearch = false) {
+  const pokemonsArray = isSearch ? searchResults : loadedPokemons;
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   
   prevBtn.disabled = index <= 0;
-  nextBtn.disabled = index >= loadedPokemons.length - 1;
+  nextBtn.disabled = index >= pokemonsArray.length - 1;
 }
 
 function prevPokemon(index) {
   if (index > 0) {
-    showOverlay(index - 1);
-    updateArrowButtons(index - 1);
+    const isSearch = searchInput.value.trim().length >= 3;
+    showOverlay(isSearch ? searchResults.indexOf(searchResults[index - 1]) : index - 1);
+    updateArrowButtons(index - 1, isSearch);
   }
 }
 
 function nextPokemon(index) {
-  if (index < loadedPokemons.length - 1) {
+  const isSearch = searchInput.value.trim().length >= 3;
+  const pokemonsArray = isSearch ? searchResults : loadedPokemons;
+  
+  if (index < pokemonsArray.length - 1) {
     showOverlay(index + 1);
-    updateArrowButtons(index + 1);
+    updateArrowButtons(index + 1, isSearch);
   }
 }

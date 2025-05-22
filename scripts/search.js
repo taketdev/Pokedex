@@ -28,43 +28,50 @@ async function fetchDetails(urls) {
 
 function setLoadMoreVisible(visible) {
   const loadMoreButton = document.getElementById('load_more_button');
-  loadMoreButton.style.display = visible && searchInput.value.trim().length === 0 ? 'block' : 'none';
 }
 
 async function handleSearch() {
   const q = searchInput.value.trim().toLowerCase();
+  const loadMoreButton = document.getElementById('load_more_button');
 
   if (q.length >= 3) {
-    setLoadMoreVisible(false);
+    if (loadMoreButton) {
+      loadMoreButton.style.visibility = 'hidden'; // Hide the button
+    }
     toggleLoading(true);
     const urls = getMatches(q);
 
     if (urls.length === 0) {
       container.innerHTML = '<p style="text-align: center; margin-top: 20px;">No Pokémon found.</p>';
       toggleLoading(false);
+      if (loadMoreButton) {
+        loadMoreButton.style.visibility = 'visible'; // Show the button again
+      }
       return;
     }
 
     const results = await fetchDetails(urls);
-    searchResults = results; // Speichere nur in searchResults
+    searchResults = results;
 
-    container.innerHTML = ''; // Leere den Container
+    container.innerHTML = '';
     results.forEach((poke, index) => {
       container.innerHTML += renderCardTemplate(poke, index);
     });
     toggleLoading(false);
   } else if (q.length === 0) {
-    // Render nur loadedPokemons bei leerer Suche
     container.innerHTML = '';
     loadedPokemons.forEach((poke, index) => {
       container.innerHTML += renderCardTemplate(poke, index);
     });
-    setLoadMoreVisible(true);
+    if (loadMoreButton) {
+      loadMoreButton.style.visibility = 'visible'; // Show the button again
+    }
   }
 }
 
 async function setup() {
   await loadAllPokemonNames();
+  setLoadMoreVisible(true);
 }
 
 setup();
