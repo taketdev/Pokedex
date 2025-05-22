@@ -182,7 +182,6 @@ button.arrow:disabled{
   pointer-events: none;
 }
 
-
 @media (max-width: 420px) {
   .detail_img{
     width: 110px;

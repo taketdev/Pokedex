@@ -81,10 +81,9 @@ async function setup() {
 function clearSearchInput() {
   const searchInput = document.getElementById('searchInput');
   searchInput.value = '';
-  handleSearch(); // Aktualisiere die Anzeige, da die Suche gelöscht wurde
+  handleSearch();
 }
 
-// Zeige den Button nur an, wenn die Suchleiste nicht leer ist
 document.getElementById('searchInput').addEventListener('input', function() {
   const clearButton = document.getElementById('clearSearch');
   clearButton.style.display = this.value.length > 0 ? 'block' : 'none';
