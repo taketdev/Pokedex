@@ -1,4 +1,5 @@
 const loadedPokemons = [];
+let searchResults = [];
 
 document.getElementById('pokemon_container').addEventListener('click', e => {
     const card = e.target.closest('.pokemon_card');

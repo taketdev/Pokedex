@@ -1,23 +1,22 @@
-function getOverlayData(index) {
-    const poke = loadedPokemons[index];
-    const name = poke.name;
-    const id = poke.id;
-    const img = poke.sprites.other['official-artwork'].front_default;
-    const types = poke.types.map(t => t.type.name);
-    const height = poke.height / 10 + "m";
-    const weight = poke.weight / 10 + "kg";
-    const abilities = poke.abilities.map(a => a.ability.name);
-    const stats = poke.stats.map(s => s.base_stat);
-    const statNames = ['HP', 'ATK', 'DEF', 'SpA', 'SpD', 'SPD'];
-    const statHTML = stats.map((val, i) => `<div class="stat ${statNames[i].toLowerCase()}">` + `<span>${statNames[i]}</span><strong>${val}</strong></div>`).join('');
-    const total = stats.reduce((a, b) => a + b, 0);
-    const typeHTML = types.map(type => `<span class="type ${type}">${type}</span>`).join('');
-    const abilityHTML = abilities.map(a => `<div class="ability">${a}</div>`).join('');
-    const firstType = types[0];
-    const typeClass = `type ${firstType}`;
+function getOverlayData(poke) {
+  const name = poke.name;
+  const id = poke.id;
+  const img = poke.sprites.other['official-artwork'].front_default;
+  const types = poke.types.map(t => t.type.name);
+  const height = poke.height / 10 + "m";
+  const weight = poke.weight / 10 + "kg";
+  const abilities = poke.abilities.map(a => a.ability.name);
+  const stats = poke.stats.map(s => s.base_stat);
+  const statNames = ['HP', 'ATK', 'DEF', 'SpA', 'SpD', 'SPD'];
+  const statHTML = stats.map((val, i) => `<div class="stat ${statNames[i].toLowerCase()}">` + `<span>${statNames[i]}</span><strong>${val}</strong></div>`).join('');
+  const total = stats.reduce((a, b) => a + b, 0);
+  const typeHTML = types.map(type => `<span class="type ${type}">${type}</span>`).join('');
+  const abilityHTML = abilities.map(a => `<div class="ability">${a}</div>`).join('');
+  const firstType = types[0];
+  const typeClass = `type ${firstType}`;
   
-    return { name, id, img, typeClass, typeHTML, height, weight, abilityHTML, statHTML, total };
-  }
+  return { name, id, img, typeClass, typeHTML, height, weight, abilityHTML, statHTML, total };
+}
 
 function renderOverlayTemplate(data, index) {
     const { name, id, img, typeClass, typeHTML, height, weight, abilityHTML, statHTML, total } = data;
@@ -56,13 +55,20 @@ document.getElementById('pokemon_overlay').innerHTML = `
     }
 
 function showOverlay(index) {
-  const data = getOverlayData(index);
-  renderOverlayTemplate(data, index);
+  let data;
+  if (searchInput.value.trim().length >= 3) {
+    data = searchResults[index];
+  } else {
+    data = loadedPokemons[index];
+  }
+
+  const pokeData = getOverlayData(data);
+  renderOverlayTemplate(pokeData, index);
 
   const overlay = document.getElementById('pokemon_overlay');
   overlay.classList.remove('d_none');
   document.body.style.overflow = 'hidden';
-      
+
   getEvolutionHTML(data.name).then(evolutionHTML => {
     document.querySelector('.evolution').innerHTML = evolutionHTML;
   });
