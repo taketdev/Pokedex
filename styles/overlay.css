@@ -102,12 +102,12 @@
   text-align: center;
 }
 .label {
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #777;
 }
 .value {
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 .ability {
   background-color: #e0e0e0;
@@ -139,7 +139,7 @@
   text-align: center;
 }
 .stat span {
-  font-size: 0.7rem;
+  font-size: 1rem;
   color: #777;
   margin-bottom: 2px;
 }
@@ -159,7 +159,7 @@
   margin-bottom: 0.3rem;
 }
 .evo_stage p {
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #555;
 }
 .nav_arrows {
