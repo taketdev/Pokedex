@@ -84,27 +84,41 @@ function renderOverlayTemplate(data, index) {
 }
 
 function showOverlay(index) {
-  let data;
-  const isSearch = searchInput.value.trim().length >= 3;
-
-  if (isSearch) {
-    data = searchResults[index];
-  } else {
-    data = loadedPokemons[index];
-  }
-
+  const data = getPokemonData(index);
   const pokeData = getOverlayData(data);
   renderOverlayTemplate(pokeData, index);
 
+  showOverlayElement();
+  loadEvolutionData(pokeData.name, pokeData.types[0]);
+  updateNavigationButtons(index);
+}
+
+function getPokemonData(index) {
+  const isSearchActive = searchInput.value.trim().length >= 3;
+  return isSearchActive ? searchResults[index] : loadedPokemons[index];
+}
+
+function showOverlayElement() {
   const overlay = document.getElementById("pokemon_overlay");
   overlay.classList.remove("d_none");
   document.body.style.overflow = "hidden";
+}
 
-  getEvolutionHTML(data.name).then((evolutionHTML) => {
+async function loadEvolutionData(pokemonName, firstType) {
+  try {
+    const evolutionHTML = await getEvolutionHTML(pokemonName);
     document.querySelector(".evolution").innerHTML = evolutionHTML;
-  });
+  } catch (error) {
+    console.error("Error loading Evolution:", error);
+    document.querySelector(".evolution").innerHTML = `
+      <p class="no-evolution-msg">Unfortunately, no evolution was found.</p>
+    `;
+  }
+}
 
-  updateArrowButtons(index, isSearch);
+function updateNavigationButtons(index) {
+  const isSearchActive = searchInput.value.trim().length >= 3;
+  updateArrowButtons(index, isSearchActive);
 }
 
 async function fetchEvolutionChain(pokemonName) {
