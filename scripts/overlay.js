@@ -3,55 +3,52 @@ function getOverlayData(poke) {
   const id = poke.id;
   const img = poke.sprites.other["official-artwork"].front_default;
   const types = poke.types.map((t) => t.type.name);
-  const height = poke.height / 10 + "m";
-  const weight = poke.weight / 10 + "kg";
+  const height = getHeight(poke.height);
+  const weight = getWeight(poke.weight);
   const abilities = poke.abilities.map((a) => a.ability.name);
-  const stats = poke.stats.map((s) => s.base_stat);
-  const statNames = ["HP", "ATK", "DEF", "SpA", "SpD", "SPD"];
-  const statHTML = stats
-    .map(
-      (val, i) =>
-        `<div class="stat ${statNames[i].toLowerCase()}">` +
-        `<span>${statNames[i]}</span><strong>${val}</strong></div>`
-    )
-    .join("");
-  const total = stats.reduce((a, b) => a + b, 0);
-  const typeHTML = types
-    .map((type) => `<span class="type ${type}">${type}</span>`)
-    .join("");
-  const abilityHTML = abilities
-    .map((a) => `<div class="ability">${a}</div>`)
-    .join("");
-  const firstType = types[0];
-  const typeClass = `type ${firstType}`;
+  const { stats, statHTML, total } = processStats(poke.stats);
+  const { typeHTML, typeClass } = processTypes(types);
 
   return {
-    name,
-    id,
-    img,
-    typeClass,
-    typeHTML,
-    height,
-    weight,
-    abilityHTML,
-    statHTML,
-    total,
+    name, id, img, typeClass, typeHTML, height, weight, abilities, statHTML, total, types
   };
 }
 
+function getHeight(heightInDecimeters) {
+  return (heightInDecimeters / 10) + "m";
+}
+
+function getWeight(weightInHectograms) {
+  return (weightInHectograms / 10) + "kg";
+}
+
+function processStats(statsArray) {
+  const statNames = ["HP", "ATK", "DEF", "SpA", "SpD", "SPD"];
+  const stats = statsArray.map(s => s.base_stat);
+  const total = stats.reduce((a, b) => a + b, 0);
+  
+  const statHTML = stats.map((val, i) => 
+    `<div class="stat ${statNames[i].toLowerCase()}">
+      <span>${statNames[i]}</span>
+      <strong>${val}</strong>
+    </div>`
+  ).join("");
+  
+  return { stats, statHTML, total };
+}
+
+function processTypes(typesArray) {
+  const typeHTML = typesArray.map(type => 
+    `<span class="type ${type}">${type}</span>`
+  ).join("");
+  
+  const typeClass = `type ${typesArray[0]}`;
+  
+  return { typeHTML, typeClass };
+}
+
 function renderOverlayTemplate(data, index) {
-  const {
-    name,
-    id,
-    img,
-    typeClass,
-    typeHTML,
-    height,
-    weight,
-    abilityHTML,
-    statHTML,
-    total,
-  } = data;
+  const {name, id, img, typeClass, typeHTML, height, weight, abilityHTML, statHTML, total} = data;
 
   document.getElementById("pokemon_overlay").innerHTML = `
     <div id="overlay_click_area" class="overlay" onclick="closeOverlayOnOutsideClick(event)">  
