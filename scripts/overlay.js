@@ -6,11 +6,12 @@ function getOverlayData(poke) {
   const height = getHeight(poke.height);
   const weight = getWeight(poke.weight);
   const abilities = poke.abilities.map((a) => a.ability.name);
+  const abilityHTML = generateAbilityHTML(abilities);
   const { stats, statHTML, total } = processStats(poke.stats);
   const { typeHTML, typeClass } = processTypes(types);
 
   return {
-    name, id, img, typeClass, typeHTML, height, weight, abilities, statHTML, total, types
+    name, id, img, typeClass, typeHTML, height, weight, abilities, statHTML, total, types, abilityHTML
   };
 }
 
@@ -20,6 +21,12 @@ function getHeight(heightInDecimeters) {
 
 function getWeight(weightInHectograms) {
   return (weightInHectograms / 10) + "kg";
+}
+
+function generateAbilityHTML(abilitiesArray) {
+  return abilitiesArray.map(ability => 
+    `<div class="ability">${ability}</div>`
+  ).join("");
 }
 
 function processStats(statsArray) {
