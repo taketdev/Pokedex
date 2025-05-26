@@ -34,43 +34,55 @@ function setLoadMoreVisible(visible) {
 }
 
 async function handleSearch() {
-  const q = searchInput.value.trim().toLowerCase();
-  const loadMoreButton = document.getElementById("load_more_button");
+  const q = getQuery();
+  toggleLoadMore(q);
+  toggleLoading(q.length >= 3);
 
-  if (q.length >= 3) {
-    if (loadMoreButton) {
-      loadMoreButton.style.visibility = "hidden";
-    }
-    toggleLoading(true);
-    const urls = getMatches(q);
+  if (q.length < 3) return showDefaultOrShort(q);
 
-    if (urls.length === 0) {
-      container.innerHTML =
-        '<p style="text-align: center; margin-top: 20px;">No Pokémon found.</p>';
-      toggleLoading(false);
-      if (loadMoreButton) {
-        loadMoreButton.style.visibility = "visible";
-      }
-      return;
-    }
+  const matches = getMatches(q);
+  if (!matches.length) return showNoResults();
 
-    const results = await fetchDetails(urls);
-    searchResults = results;
+  const list = await fetchDetails(matches);
+  renderList(list);
+}
 
-    container.innerHTML = "";
-    results.forEach((poke, index) => {
-      container.innerHTML += renderCardTemplate(poke, index);
-    });
-    toggleLoading(false);
-  } else if (q.length === 0) {
-    container.innerHTML = "";
-    loadedPokemons.forEach((poke, index) => {
-      container.innerHTML += renderCardTemplate(poke, index);
-    });
-    if (loadMoreButton) {
-      loadMoreButton.style.visibility = "visible";
-    }
+function getQuery() {
+  let input = document.getElementById("search_input") 
+    || document.getElementById("searchInput")
+    || (typeof window.searchInput !== 'undefined' && window.searchInput);
+  if (input && typeof input.value === 'string') {
+    return input.value.trim().toLowerCase();
   }
+  return "";
+}
+
+function toggleLoadMore(q) {
+  const btn = document.getElementById("load_more_button");
+  if (!btn) return;
+  btn.style.visibility = q ? "hidden" : "visible";
+}
+
+function showDefaultOrShort(q) {
+  if (!q.length) {
+    container.innerHTML = loadedPokemons
+      .map((p, i) => renderCardTemplate(p, i))
+      .join('');
+  }
+  toggleLoading(false);
+}
+
+function showNoResults() {
+  container.innerHTML = '<p style="text-align:center;margin-top:20px;">No Pokémon found.</p>';
+  toggleLoading(false);
+}
+
+function renderList(list) {
+  searchResults = list;
+  container.innerHTML = list
+    .map((p, i) => renderCardTemplate(p, i))
+    .join('');
+  toggleLoading(false);
 }
 
 async function setup() {
