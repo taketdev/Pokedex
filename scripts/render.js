@@ -67,6 +67,12 @@ function renderBatch(pokemons) {
 }
 
 async function loadMore() {
+  // Check if we're in filter mode, if so use the new system
+  if (typeof isFilterMode !== 'undefined' && isFilterMode) {
+    return loadFilteredResults(getQuery(), false);
+  }
+  
+  // Original load more functionality for non-filter mode
   toggleLoading(true);
   try {
     const [newPokemons] = await Promise.all([fetchBatch(), delay(1000)]);

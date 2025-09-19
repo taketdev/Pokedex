@@ -9,3 +9,7 @@ Thumbs.db
 # temp data
 *.log
 *.tmp
+
+# claude
+CLAUDE.md
+enhancedsearch.md

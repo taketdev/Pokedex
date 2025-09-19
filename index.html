@@ -34,9 +34,151 @@
       </header>
     
 <div class="searchContainer">
-        <input type="text" id="searchInput" placeholder="Search your Pokémon" class="searchInput" oninput="handleSearch()">
-        <button id="searchButton" class="searchButton" onclick="handleSearch()">🔍</button>
-        <button id="clearSearch" class="clear_button" onclick="clearSearchInput()" style="display: none;">✕</button>
+        <div class="searchBar">
+          <input type="text" id="searchInput" placeholder="Search your Pokémon" class="searchInput" oninput="handleSearch()">
+          <button id="filterToggle" class="filterButton" onclick="toggleFilters()">⚙️</button>
+          <button id="searchButton" class="searchButton" onclick="handleSearch()">🔍</button>
+          <button id="clearSearch" class="clear_button" onclick="clearSearchInput()" style="display: none;">✕</button>
+        </div>
+        
+        <div id="filterPanel" class="filterPanel">
+          <div class="filterSection">
+            <label>Type Filter: <span class="info-icon" data-tooltip="Filter Pokemon by their type (Fire, Water, etc.)">ℹ️</span></label>
+            <select id="typeFilter" class="filterSelect">
+              <option value="">All Types</option>
+              <option value="normal">Normal</option>
+              <option value="fire">Fire</option>
+              <option value="water">Water</option>
+              <option value="electric">Electric</option>
+              <option value="grass">Grass</option>
+              <option value="ice">Ice</option>
+              <option value="fighting">Fighting</option>
+              <option value="poison">Poison</option>
+              <option value="ground">Ground</option>
+              <option value="flying">Flying</option>
+              <option value="psychic">Psychic</option>
+              <option value="bug">Bug</option>
+              <option value="rock">Rock</option>
+              <option value="ghost">Ghost</option>
+              <option value="dragon">Dragon</option>
+              <option value="dark">Dark</option>
+              <option value="steel">Steel</option>
+              <option value="fairy">Fairy</option>
+            </select>
+          </div>
+          
+          <div class="filterSection">
+            <label>Generation: <span class="info-icon" data-tooltip="Filter by Pokemon generation (Gen I = Pokemon 1-151, etc.)">ℹ️</span></label>
+            <select id="generationFilter" class="filterSelect">
+              <option value="">All Generations</option>
+              <option value="1">Gen I (1-151)</option>
+              <option value="2">Gen II (152-251)</option>
+              <option value="3">Gen III (252-386)</option>
+              <option value="4">Gen IV (387-493)</option>
+              <option value="5">Gen V (494-649)</option>
+              <option value="6">Gen VI (650-721)</option>
+              <option value="7">Gen VII (722-809)</option>
+              <option value="8">Gen VIII (810-905)</option>
+            </select>
+          </div>
+
+          <div class="filterSection">
+            <label>Region: <span class="info-icon" data-tooltip="Filter by game region where Pokemon first appeared">ℹ️</span></label>
+            <select id="regionFilter" class="filterSelect">
+              <option value="">All Regions</option>
+              <option value="kanto">Kanto</option>
+              <option value="johto">Johto</option>
+              <option value="hoenn">Hoenn</option>
+              <option value="sinnoh">Sinnoh</option>
+              <option value="unova">Unova</option>
+              <option value="kalos">Kalos</option>
+              <option value="alola">Alola</option>
+              <option value="galar">Galar</option>
+            </select>
+          </div>
+
+          <div class="filterSection">
+            <label>Ability: <span class="info-icon" data-tooltip="Filter Pokemon by their special abilities (Overgrow, Blaze, etc.)">ℹ️</span></label>
+            <select id="abilityFilter" class="filterSelect">
+              <option value="">All Abilities</option>
+              <option value="overgrow">Overgrow</option>
+              <option value="blaze">Blaze</option>
+              <option value="torrent">Torrent</option>
+              <option value="swarm">Swarm</option>
+              <option value="keen-eye">Keen Eye</option>
+              <option value="tangled-feet">Tangled Feet</option>
+              <option value="big-pecks">Big Pecks</option>
+              <option value="static">Static</option>
+              <option value="lightning-rod">Lightning Rod</option>
+              <option value="sand-veil">Sand Veil</option>
+              <option value="poison-point">Poison Point</option>
+              <option value="rivalry">Rivalry</option>
+              <option value="sheer-force">Sheer Force</option>
+              <option value="cute-charm">Cute Charm</option>
+              <option value="magic-guard">Magic Guard</option>
+              <option value="flash-fire">Flash Fire</option>
+              <option value="water-absorb">Water Absorb</option>
+              <option value="damp">Damp</option>
+              <option value="swift-swim">Swift Swim</option>
+              <option value="chlorophyll">Chlorophyll</option>
+              <option value="effect-spore">Effect Spore</option>
+              <option value="dry-skin">Dry Skin</option>
+              <option value="synchronize">Synchronize</option>
+              <option value="inner-focus">Inner Focus</option>
+              <option value="steadfast">Steadfast</option>
+              <option value="rock-head">Rock Head</option>
+              <option value="sturdy">Sturdy</option>
+              <option value="magnet-pull">Magnet Pull</option>
+              <option value="soundproof">Soundproof</option>
+              <option value="volt-absorb">Volt Absorb</option>
+              <option value="flame-body">Flame Body</option>
+              <option value="magma-armor">Magma Armor</option>
+              <option value="shell-armor">Shell Armor</option>
+              <option value="water-veil">Water Veil</option>
+              <option value="natural-cure">Natural Cure</option>
+              <option value="serene-grace">Serene Grace</option>
+              <option value="levitate">Levitate</option>
+            </select>
+          </div>
+
+          <div class="filterSection">
+            <label>Base Stat: <span class="info-icon" data-tooltip="Filter Pokemon by individual stats (HP, Attack, etc.) or total stats">ℹ️</span></label>
+            <div class="statFilterContainer">
+              <select id="statType" class="filterSelect small">
+                <option value="hp">HP</option>
+                <option value="attack">Attack</option>
+                <option value="defense">Defense</option>
+                <option value="special-attack">Sp. Attack</option>
+                <option value="special-defense">Sp. Defense</option>
+                <option value="speed">Speed</option>
+                <option value="total">Total</option>
+              </select>
+              <div class="rangeContainer">
+                <input type="range" id="baseStatsRange" min="10" max="200" value="10" class="statsSlider">
+                <span id="baseStatsValue">10+</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="filterSection">
+            <label>Evolution: <span class="info-icon" data-tooltip="Filter by evolution stage (Base form, Evolved, Final evolution, etc.)">ℹ️</span></label>
+            <select id="evolutionFilter" class="filterSelect">
+              <option value="">All Pokemon</option>
+              <option value="no-evolution">No Evolution</option>
+              <option value="base-form">Base Form (Can Evolve)</option>
+              <option value="evolved-form">Evolved Form</option>
+              <option value="final-evolution">Final Evolution</option>
+            </select>
+          </div>
+          
+          <div class="filterSection">
+            <label>Stats Range (Total): <span class="info-icon" data-tooltip="Filter by total base stats (sum of all 6 stats)">ℹ️</span></label>
+            <div class="rangeContainer">
+              <input type="range" id="statsRange" min="200" max="800" value="200" class="statsSlider">
+              <span id="statsValue">200+</span>
+            </div>
+          </div>
+        </div>
       </div>     
 
     <div class="mainContainer">
