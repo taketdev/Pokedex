@@ -1,0 +1,11 @@
+# system
+.DS_Store
+Thumbs.db
+
+# edit folder
+.vscode/
+.idea/
+
+# temp data
+*.log
+*.tmp
