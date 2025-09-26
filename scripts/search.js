@@ -530,6 +530,8 @@ async function renderFilteredList(list) {
 async function setup() {
   await loadAllPokemonNames();
   setLoadMoreVisible(true);
+  // Initialize filter chips on page load
+  updateFilterChips();
 }
 
 function clearSearchInput() {
@@ -574,16 +576,19 @@ document.getElementById("generationFilter").addEventListener("change", handleFil
 document.getElementById("regionFilter").addEventListener("change", handleFilterChange);
 document.getElementById("abilityFilter").addEventListener("change", handleFilterChange);
 document.getElementById("statType").addEventListener("change", handleFilterChange);
-document.getElementById("baseStatsRange").addEventListener("change", handleFilterChange);
+document.getElementById("baseStatsRange").addEventListener("input", handleFilterChange);
 document.getElementById("evolutionFilter").addEventListener("change", handleFilterChange);
-document.getElementById("statsRange").addEventListener("change", handleFilterChange);
+document.getElementById("statsRange").addEventListener("input", handleFilterChange);
 
 function handleFilterChange() {
   // Reset pagination when filters change
   currentPage = 0;
   currentFilteredResults = [];
   hasMoreResults = true;
-  
+
+  // Update filter chips
+  updateFilterChips();
+
   // Apply filters to current search
   handleSearch();
 }
@@ -612,6 +617,170 @@ function getActiveFilters() {
     evolution: document.getElementById("evolutionFilter").value,
     minStats: parseInt(document.getElementById("statsRange").value)
   };
+}
+
+// Filter Chips Functionality
+function updateFilterChips() {
+  const container = document.getElementById('filterChipsContainer');
+  const filters = getActiveFilters();
+  const hasFilters = hasActiveFilters();
+
+
+  // Clear existing chips
+  container.innerHTML = '';
+
+  if (!hasFilters) {
+    container.classList.remove('show');
+    return;
+  }
+
+  container.classList.add('show');
+
+  // Create chips for each active filter
+  const chips = [];
+
+  if (filters.type) {
+    chips.push(createFilterChip('Type', capitalizeFirst(filters.type), 'typeFilter'));
+  }
+
+  if (filters.generation) {
+    const genText = `Gen ${getRomanNumeral(filters.generation)}`;
+    chips.push(createFilterChip('Generation', genText, 'generationFilter'));
+  }
+
+  if (filters.region) {
+    chips.push(createFilterChip('Region', capitalizeFirst(filters.region), 'regionFilter'));
+  }
+
+  if (filters.ability) {
+    chips.push(createFilterChip('Ability', formatAbilityName(filters.ability), 'abilityFilter'));
+  }
+
+  if (filters.evolution) {
+    chips.push(createFilterChip('Evolution', formatEvolutionName(filters.evolution), 'evolutionFilter'));
+  }
+
+  if (filters.minBaseStat > 10) {
+    const statName = formatStatName(filters.statType);
+    chips.push(createFilterChip('Base Stat', `${statName} ${filters.minBaseStat}+`, 'baseStatsRange'));
+  }
+
+  if (filters.minStats > 200) {
+    chips.push(createFilterChip('Total Stats', `${filters.minStats}+`, 'statsRange'));
+  }
+
+  // Add all chips to container
+  chips.forEach(chip => container.appendChild(chip));
+
+  // Add clear all button if multiple filters
+  if (chips.length > 1) {
+    const clearAllBtn = createClearAllButton();
+    container.appendChild(clearAllBtn);
+  }
+}
+
+function createFilterChip(label, value, filterId) {
+  const chip = document.createElement('div');
+  chip.className = 'filterChip';
+
+  chip.innerHTML = `
+    <span class="chipLabel">${label}:</span>
+    <span class="chipValue">${value}</span>
+    <button class="chipRemove" onclick="removeFilter('${filterId}')" title="Remove filter">×</button>
+  `;
+
+  return chip;
+}
+
+function createClearAllButton() {
+  const button = document.createElement('button');
+  button.className = 'clearAllFilters';
+  button.innerHTML = '🗑️ Clear All';
+  button.onclick = clearAllFilters;
+  button.title = 'Clear all active filters';
+
+  return button;
+}
+
+function removeFilter(filterId) {
+  const element = document.getElementById(filterId);
+  if (!element) return;
+
+  // Reset the filter to default value
+  if (element.type === 'range') {
+    if (filterId === 'baseStatsRange') {
+      element.value = 10;
+      updateBaseStatsValue();
+    } else if (filterId === 'statsRange') {
+      element.value = 200;
+      updateStatsValue();
+    }
+  } else {
+    element.value = '';
+  }
+
+  // Trigger change to update UI and results
+  handleFilterChange();
+}
+
+function clearAllFilters() {
+  // Reset all filter elements to default values
+  document.getElementById('typeFilter').value = '';
+  document.getElementById('generationFilter').value = '';
+  document.getElementById('regionFilter').value = '';
+  document.getElementById('abilityFilter').value = '';
+  document.getElementById('evolutionFilter').value = '';
+  document.getElementById('baseStatsRange').value = 10;
+  document.getElementById('statsRange').value = 200;
+
+  // Update slider displays
+  updateBaseStatsValue();
+  updateStatsValue();
+
+  // Trigger change to update UI and results
+  handleFilterChange();
+}
+
+// Utility functions for formatting
+function capitalizeFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function getRomanNumeral(num) {
+  const romanNumerals = {
+    '1': 'I', '2': 'II', '3': 'III', '4': 'IV',
+    '5': 'V', '6': 'VI', '7': 'VII', '8': 'VIII'
+  };
+  return romanNumerals[num] || num;
+}
+
+function formatAbilityName(ability) {
+  return ability.split('-')
+    .map(word => capitalizeFirst(word))
+    .join(' ');
+}
+
+function formatEvolutionName(evolution) {
+  const evolutionNames = {
+    'no-evolution': 'No Evolution',
+    'base-form': 'Base Form',
+    'evolved-form': 'Evolved Form',
+    'final-evolution': 'Final Evolution'
+  };
+  return evolutionNames[evolution] || evolution;
+}
+
+function formatStatName(statType) {
+  const statNames = {
+    'hp': 'HP',
+    'attack': 'ATK',
+    'defense': 'DEF',
+    'special-attack': 'SP.ATK',
+    'special-defense': 'SP.DEF',
+    'speed': 'SPD',
+    'total': 'Total'
+  };
+  return statNames[statType] || statType;
 }
 
 setup();
