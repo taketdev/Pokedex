@@ -35,11 +35,14 @@
     
 <div class="searchContainer">
         <div class="searchBar">
-          <input type="text" id="searchInput" placeholder="Search your Pokémon" class="searchInput" oninput="handleSearch()">
+          <input type="text" id="searchInput" placeholder="Search your Pokémon" class="searchInput" oninput="handleSearchInput()" autocomplete="off">
           <button id="filterToggle" class="filterButton" onclick="toggleFilters()">⚙️</button>
           <button id="searchButton" class="searchButton" onclick="handleSearch()">🔍</button>
           <button id="clearSearch" class="clear_button" onclick="clearSearchInput()" style="display: none;">✕</button>
         </div>
+
+        <!-- Auto-complete Dropdown -->
+        <div id="autocompleteDropdown" class="autocompleteDropdown"></div>
         
         <div id="filterPanel" class="filterPanel">
           <div class="filterSection">

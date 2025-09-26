@@ -476,12 +476,30 @@ async function setup() {
 function clearSearchInput() {
   const searchInput = document.getElementById("searchInput");
   searchInput.value = "";
+  hideAutocomplete();
   handleSearch();
 }
 
-document.getElementById("searchInput").addEventListener("input", function () {
-  const clearButton = document.getElementById("clearSearch");
-  clearButton.style.display = this.value.length > 0 ? "block" : "none";
+// Setup search input event listeners
+document.getElementById("searchInput").addEventListener("keydown", function(event) {
+  // Handle autocomplete keyboard navigation
+  if (handleAutocompleteKeyboard(event)) {
+    return;
+  }
+
+  // Handle Enter key for search
+  if (event.key === 'Enter') {
+    hideAutocomplete();
+    handleSearch();
+  }
+});
+
+// Click outside to hide autocomplete
+document.addEventListener('click', function(event) {
+  const searchContainer = document.querySelector('.searchContainer');
+  if (!searchContainer.contains(event.target)) {
+    hideAutocomplete();
+  }
 });
 
 // Filter functionality
@@ -720,6 +738,182 @@ function formatStatName(statType) {
     'total': 'Total'
   };
   return statNames[statType] || statType;
+}
+
+// Auto-complete functionality
+let autocompleteTimeout;
+let selectedAutocompleteIndex = -1;
+let autocompleteVisible = false;
+
+function handleSearchInput() {
+  const input = document.getElementById('searchInput');
+  const query = input.value.trim();
+
+  // Update clear button visibility
+  const clearButton = document.getElementById("clearSearch");
+  clearButton.style.display = query.length > 0 ? "block" : "none";
+
+  // Debounce autocomplete
+  clearTimeout(autocompleteTimeout);
+  autocompleteTimeout = setTimeout(() => {
+    if (query.length >= 2) {
+      showAutocomplete(query);
+    } else {
+      hideAutocomplete();
+    }
+  }, 200);
+
+  // Trigger search if query is long enough or empty
+  if (query.length >= 3 || query.length === 0) {
+    handleSearch();
+  }
+}
+
+async function showAutocomplete(query) {
+  const dropdown = document.getElementById('autocompleteDropdown');
+  const suggestions = getAutocompleteSuggestions(query);
+
+  if (suggestions.length === 0) {
+    hideAutocomplete();
+    return;
+  }
+
+  try {
+    // Fetch detailed data for top suggestions to show types
+    const topSuggestions = suggestions.slice(0, 5);
+    const urls = topSuggestions.map(p => p.url);
+    const detailedData = await fetchDetails(urls);
+
+    // Combine basic and detailed data
+    const enrichedSuggestions = suggestions.map((pokemon, index) => {
+      if (index < detailedData.length) {
+        return { ...pokemon, details: detailedData[index] };
+      }
+      return pokemon;
+    });
+
+    // Create dropdown content
+    dropdown.innerHTML = enrichedSuggestions.map((pokemon, index) =>
+      createAutocompleteItem(pokemon, index)
+    ).join('') + createAutocompleteFooter(suggestions.length);
+
+    dropdown.classList.add('show');
+    autocompleteVisible = true;
+    selectedAutocompleteIndex = -1;
+  } catch (error) {
+    console.error('Error loading autocomplete details:', error);
+    // Fallback to basic autocomplete without types
+    dropdown.innerHTML = suggestions.map((pokemon, index) =>
+      createAutocompleteItem(pokemon, index)
+    ).join('') + createAutocompleteFooter(suggestions.length);
+
+    dropdown.classList.add('show');
+    autocompleteVisible = true;
+    selectedAutocompleteIndex = -1;
+  }
+}
+
+function hideAutocomplete() {
+  const dropdown = document.getElementById('autocompleteDropdown');
+  dropdown.classList.remove('show');
+  autocompleteVisible = false;
+  selectedAutocompleteIndex = -1;
+}
+
+function getAutocompleteSuggestions(query) {
+  const queryLower = query.toLowerCase();
+  const suggestions = [];
+
+  // Get fuzzy matches but limit for autocomplete
+  const fuzzyMatches = fuzzySearchPokemons(allPokemonList, query);
+
+  // Take top 8 matches for autocomplete
+  return fuzzyMatches.slice(0, 8);
+}
+
+function createAutocompleteItem(pokemon, index) {
+  const id = getPokemonIdFromUrl(pokemon.url);
+  const name = capitalizeFirst(pokemon.name);
+
+  // Create types display if detailed data is available
+  let typesHTML = '';
+  if (pokemon.details && pokemon.details.types) {
+    const types = pokemon.details.types.map(typeInfo => {
+      const typeName = typeInfo.type.name;
+      return `<span class="pokemonType type ${typeName}">${typeName}</span>`;
+    }).join('');
+    typesHTML = `<div class="pokemonTypes">${types}</div>`;
+  }
+
+  return `
+    <div class="autocompleteItem" data-index="${index}" onclick="selectAutocompleteItem('${pokemon.name}')">
+      <span class="pokemonNumber">#${id.toString().padStart(3, '0')}</span>
+      <span class="pokemonName">${name}</span>
+      ${typesHTML}
+    </div>
+  `;
+}
+
+function createAutocompleteFooter(count) {
+  return `
+    <div class="autocompleteFooter">
+      ${count} suggestions found • Press Enter to search
+    </div>
+  `;
+}
+
+function selectAutocompleteItem(pokemonName) {
+  const input = document.getElementById('searchInput');
+  input.value = pokemonName;
+  hideAutocomplete();
+  handleSearch();
+}
+
+function handleAutocompleteKeyboard(event) {
+  if (!autocompleteVisible) return false;
+
+  const items = document.querySelectorAll('.autocompleteItem');
+
+  switch (event.key) {
+    case 'ArrowDown':
+      event.preventDefault();
+      selectedAutocompleteIndex = Math.min(selectedAutocompleteIndex + 1, items.length - 1);
+      updateAutocompleteHighlight();
+      return true;
+
+    case 'ArrowUp':
+      event.preventDefault();
+      selectedAutocompleteIndex = Math.max(selectedAutocompleteIndex - 1, -1);
+      updateAutocompleteHighlight();
+      return true;
+
+    case 'Enter':
+      if (selectedAutocompleteIndex >= 0 && items[selectedAutocompleteIndex]) {
+        event.preventDefault();
+        const selectedItem = items[selectedAutocompleteIndex];
+        const pokemonName = selectedItem.querySelector('.pokemonName').textContent.toLowerCase();
+        selectAutocompleteItem(pokemonName);
+        return true;
+      }
+      break;
+
+    case 'Escape':
+      hideAutocomplete();
+      return true;
+  }
+
+  return false;
+}
+
+function updateAutocompleteHighlight() {
+  const items = document.querySelectorAll('.autocompleteItem');
+  items.forEach((item, index) => {
+    if (index === selectedAutocompleteIndex) {
+      item.classList.add('highlighted');
+    } else {
+      item.classList.remove('highlighted');
+    }
+  });
 }
 
 // Fuzzy Search Implementation
