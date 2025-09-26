@@ -153,14 +153,49 @@
 }
 .evo_stage {
   text-align: center;
+  transition: all 0.3s ease;
 }
+
+.evo_stage.clickable {
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 8px;
+  transition: all 0.3s ease;
+}
+
+.evo_stage.clickable:hover {
+  background-color: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 .evo_stage img {
   width: 60px;
   margin-bottom: 0.3rem;
+  transition: transform 0.3s ease;
 }
-.evo_stage p {
-  font-size: 1rem;
-  color: #555;
+
+.evo_stage.clickable:hover img {
+  transform: scale(1.1);
+}
+
+.evo_stage .evo-label {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 2px 0;
+  font-weight: 500;
+}
+
+.evo_stage .evo-name {
+  font-size: 0.8rem;
+  color: #374151;
+  margin: 2px 0;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.evo_stage.clickable:hover .evo-name {
+  color: #6366f1;
 }
 .nav_arrows {
   position: absolute;

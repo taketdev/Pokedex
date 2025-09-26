@@ -296,6 +296,7 @@ function showDefaultView() {
 
 async function performApiBasedSearch(query, hasFilters) {
   try {
+
     let pokemonCandidates = [];
 
     // Step 1: Get initial candidate list
@@ -371,32 +372,38 @@ function updateLoadMoreButton() {
     console.log("Load more button not found!");
     return;
   }
-  
-  console.log(`Updating button: filterMode=${isFilterMode}, hasMore=${hasMoreResults}`);
-  
-  // Ensure button is properly centered
+
+  // Ensure button is properly centered and visible
   btn.style.display = "block";
   btn.style.visibility = "visible";
   btn.style.margin = "0 auto";
   btn.style.textAlign = "center";
-  
+
   if (isFilterMode) {
     if (hasMoreResults) {
       btn.textContent = "Load More Filtered Results";
       btn.disabled = false;
       btn.onclick = () => loadMoreFilteredResults();
-      console.log("Button set to: Load More Filtered Results");
+      btn.className = "btn btn_load_more"; // Reset styling
     } else {
-      btn.textContent = "No More Results";
+      btn.textContent = "No More Filtered Results";
       btn.disabled = true;
       btn.onclick = null;
-      console.log("Button set to: No More Results");
+      btn.className = "btn btn_load_more disabled";
     }
   } else {
-    btn.textContent = "Load more Pokémon";
-    btn.disabled = false;
-    btn.onclick = loadMore;
-    console.log("Button set to: Load more Pokémon");
+    // Check if we're at the limit for regular Pokemon
+    if (loadedPokemons.length >= 1000) {
+      btn.textContent = "All Pokémon Loaded";
+      btn.disabled = true;
+      btn.onclick = null;
+      btn.className = "btn btn_load_more disabled";
+    } else {
+      btn.textContent = "Load More Pokémon";
+      btn.disabled = false;
+      btn.onclick = loadMore;
+      btn.className = "btn btn_load_more";
+    }
   }
 }
 
@@ -1016,5 +1023,8 @@ function fuzzySearchPokemons(pokemonList, query) {
   // Limit results to top 50 for performance
   return sortedResults.slice(0, 50).map(result => result.pokemon);
 }
+
+
+
 
 setup();

@@ -162,7 +162,14 @@ async function buildEvolutionHTML(stages) {
         : i === arr.length - 1
         ? "Final"
         : "Base";
-      return `<div class=\"evo_stage\"><img src=\"${img}\"><p>${label}</p></div>`;
+
+      return `
+        <div class="evo_stage clickable" onclick="navigateToEvolution('${name}')" title="Click to view ${name}">
+          <img src="${img}" alt="${name}">
+          <p class="evo-label">${label}</p>
+          <p class="evo-name">${name}</p>
+        </div>
+      `;
     })
   );
   return parts.join("");
@@ -193,6 +200,54 @@ function closeOverlay() {
 
 function closeOverlayOnOutsideClick(event) {
   if (event.target.id === "overlay_click_area") closeOverlay();
+}
+
+async function navigateToEvolution(pokemonName) {
+  try {
+    // Show loading state
+    const overlay = document.getElementById("pokemon_overlay");
+    overlay.style.opacity = "0.6";
+
+    // Fetch the Pokemon data
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+    const pokemonData = await response.json();
+
+    // Get overlay data and render
+    const pokeData = getOverlayData(pokemonData);
+    renderOverlayTemplate(pokeData, -1); // Use -1 to indicate evolution navigation
+
+    // Reset opacity
+    overlay.style.opacity = "1";
+
+    // Load evolution data for the new Pokemon
+    loadEvolutionData(pokeData.name, pokeData.types[0]);
+
+    // Update navigation buttons - disable them since we're not in normal list mode
+    disableNavigationButtons();
+
+  } catch (error) {
+    console.error("Error navigating to evolution:", error);
+    // Reset overlay state on error
+    const overlay = document.getElementById("pokemon_overlay");
+    overlay.style.opacity = "1";
+
+    // Show error message
+    alert("Sorry, could not load evolution data. Please try again.");
+  }
+}
+
+function disableNavigationButtons() {
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+
+  if (prevBtn) {
+    prevBtn.disabled = true;
+    prevBtn.style.opacity = "0.5";
+  }
+  if (nextBtn) {
+    nextBtn.disabled = true;
+    nextBtn.style.opacity = "0.5";
+  }
 }
 
 function updateArrowButtons(index, isSearch = false) {

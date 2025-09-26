@@ -69,17 +69,47 @@ function renderBatch(pokemons) {
 async function loadMore() {
   // Check if we're in filter mode, if so use the new system
   if (typeof isFilterMode !== 'undefined' && isFilterMode) {
-    return loadFilteredResults(getQuery(), false);
+    return loadMoreFilteredResults();
   }
-  
+
+  // Check if we reached the limit (1000+ Pokemon available)
+  if (loadedPokemons.length >= 1000) {
+    updateLoadMoreButtonToComplete();
+    return;
+  }
+
   // Original load more functionality for non-filter mode
   toggleLoading(true);
   try {
-    const [newPokemons] = await Promise.all([fetchBatch(), delay(1000)]);
+    const [newPokemons] = await Promise.all([fetchBatch(), delay(500)]);
     renderBatch(newPokemons);
+
+    // Update button state based on how many Pokemon we have
+    if (loadedPokemons.length >= 1000) {
+      updateLoadMoreButtonToComplete();
+    }
   } catch (err) {
-    console.error("Fehler beim Nachladen:", err);
+    console.error("Error loading more Pokemon:", err);
+    showLoadMoreError();
   } finally {
     toggleLoading(false);
+  }
+}
+
+function updateLoadMoreButtonToComplete() {
+  const btn = document.getElementById("load_more_button");
+  if (btn) {
+    btn.textContent = "All Pokémon Loaded";
+    btn.disabled = true;
+    btn.onclick = null;
+  }
+}
+
+function showLoadMoreError() {
+  const btn = document.getElementById("load_more_button");
+  if (btn) {
+    btn.textContent = "Error - Try Again";
+    btn.disabled = false;
+    btn.onclick = loadMore;
   }
 }
