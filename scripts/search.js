@@ -22,50 +22,6 @@ function renderList(pokemons) {
   });
 }
 
-function getMatches(query) {
-  const filters = getActiveFilters();
-  const hasFilters = hasActiveFilters();
-  
-  // If no query and no filters, return empty to show default
-  if (!query && !hasFilters) {
-    return [];
-  }
-  
-  let filteredList = allPokemonList;
-  
-  // Apply name filter if query exists
-  if (query && query.length >= 3) {
-    filteredList = filteredList.filter((p) => p.name.includes(query));
-  }
-  
-  // Apply generation filter (pre-filter by ID range)
-  if (filters.generation) {
-    filteredList = filteredList.filter((p) => {
-      const id = getPokemonIdFromUrl(p.url);
-      return isInGeneration(id, filters.generation);
-    });
-  }
-  
-  // Apply region filter (same as generation)
-  if (filters.region) {
-    filteredList = filteredList.filter((p) => {
-      const id = getPokemonIdFromUrl(p.url);
-      return isInRegion(id, filters.region);
-    });
-  }
-  
-  // For type, ability, stats, and evolution filters, we need to load more Pokemon
-  // to ensure we have enough after detailed filtering
-  let limit = 200; // Load more for detailed filtering
-  
-  if (query && query.length >= 3) {
-    limit = Math.min(100, filteredList.length); // Smaller limit for name searches
-  }
-  
-  return filteredList
-    .slice(0, limit)
-    .map((p) => p.url);
-}
 
 function getPokemonIdFromUrl(url) {
   const parts = url.split('/');
@@ -238,124 +194,76 @@ function setLoadMoreVisible(visible) {
 async function handleSearch() {
   const q = getQuery();
   const hasFilters = hasActiveFilters();
-  
+
   // Update mode
   isFilterMode = hasFilters || q.length >= 3;
-  
+
   toggleLoadMore(isFilterMode);
-  
+
   // If no search query and no filters, show default
   if (q.length < 3 && !hasFilters) {
     isFilterMode = false;
-    return showDefaultOrShort(q);
+    return showDefaultView();
   }
-  
+
   toggleLoading(true);
-  
+
   try {
     // Reset pagination for new search
     currentPage = 0;
     currentFilteredResults = [];
     hasMoreResults = true;
-    
-    // Load first batch of filtered results
-    await loadFilteredResults(q, true);
+
+    // Perform proper API-based search
+    await performApiBasedSearch(q, hasFilters);
   } catch (error) {
     console.error("Search failed:", error);
     showNoResults();
   }
 }
 
-async function loadFilteredResults(query = "", isNewSearch = false) {
-  if (!hasMoreResults && !isNewSearch) {
+async function loadMoreFilteredResults() {
+  if (!hasMoreResults) {
     showNoMoreResults();
     return;
   }
-  
+
   toggleLoading(true);
-  
+
   try {
-    let allMatches;
-    if (query.length >= 3 || hasActiveFilters()) {
-      allMatches = getMatches(query);
-      if (!allMatches.length) {
-        hasMoreResults = false;
-        container.innerHTML = '<p style="text-align:center;margin-top:20px;">No Pokémon found.</p>';
-        toggleLoading(false);
-        return;
-      }
-    } else {
+    // Load more from already filtered results
+    const batchSize = 20;
+    const startIndex = currentPage * batchSize;
+    const endIndex = Math.min(startIndex + batchSize, currentFilteredResults.length);
+    const nextBatch = currentFilteredResults.slice(startIndex, endIndex);
+
+    if (nextBatch.length === 0) {
       hasMoreResults = false;
-      return showDefaultOrShort(query);
+      showNoMoreResults();
+      return;
     }
 
-    // If this is a new search, reset and load everything
-    if (isNewSearch) {
-      currentFilteredResults = [];
-      container.innerHTML = '';
-      
-      // Load and filter all matches
-      console.log(`Loading ${allMatches.length} Pokemon for filtering...`);
-      const allData = await fetchDetails(allMatches);
-      const allFilteredData = await applyDetailedFilters(allData);
-      
-      // Store filtered results for pagination
-      currentFilteredResults = allFilteredData;
-      currentPage = 0;
-      
-      // Show first batch
-      const batchSize = 20;
-      const firstBatch = allFilteredData.slice(0, batchSize);
-      
-      // Set search results for overlay navigation
-      searchResults = firstBatch;
-      
-      // Render first batch
-      container.innerHTML = firstBatch
-        .map((p, i) => renderCardTemplate(p, i))
-        .join('');
-      
-      // Update pagination state
-      hasMoreResults = allFilteredData.length > batchSize;
-      currentPage = 1;
-      
-      console.log(`Loaded ${allFilteredData.length} filtered Pokemon, showing first ${firstBatch.length}, more: ${hasMoreResults}`);
-      
-    } else {
-      // Load more from already filtered results
-      const batchSize = 20;
-      const startIndex = currentPage * batchSize;
-      const endIndex = Math.min(startIndex + batchSize, currentFilteredResults.length);
-      const nextBatch = currentFilteredResults.slice(startIndex, endIndex);
-      
-      if (nextBatch.length === 0) {
-        hasMoreResults = false;
-        showNoMoreResults();
-        return;
-      }
-      
-      // Update search results for overlay navigation
-      searchResults = [...searchResults, ...nextBatch];
-      
-      // Append to existing results
-      const currentHTML = container.innerHTML;
-      const newHTML = nextBatch.map((p, i) => 
-        renderCardTemplate(p, startIndex + i)
-      ).join('');
-      container.innerHTML = currentHTML + newHTML;
-      
-      currentPage++;
-      hasMoreResults = endIndex < currentFilteredResults.length;
-      
-      console.log(`Loaded more: showing ${searchResults.length} total, more available: ${hasMoreResults}`);
-    }
-    
+    // Update search results for overlay navigation
+    searchResults = [...searchResults, ...nextBatch];
+
+    // Append to existing results
+    const currentHTML = container.innerHTML;
+    const newHTML = nextBatch.map((p, i) =>
+      renderCardTemplate(p, startIndex + i)
+    ).join('');
+    container.innerHTML = currentHTML + newHTML;
+
+    currentPage++;
+    hasMoreResults = endIndex < currentFilteredResults.length;
+
+    console.log(`Loaded more: showing ${searchResults.length} total, more available: ${hasMoreResults}`);
+
     // Update load more button
     updateLoadMoreButton();
     toggleLoading(false);
-    
+
   } catch (error) {
-    console.error("Error loading filtered results:", error);
+    console.error("Error loading more filtered results:", error);
     showNoResults();
   }
 }
@@ -377,43 +285,74 @@ function toggleLoadMore(hasSearchOrFilter) {
   btn.style.visibility = "visible";
 }
 
-function showDefaultOrShort(q) {
-  const filters = getActiveFilters();
-  const hasActiveFilters = filters.type || filters.generation || filters.minStats > 200;
-  
-  if (!q.length && !hasActiveFilters) {
-    container.innerHTML = loadedPokemons
-      .map((p, i) => renderCardTemplate(p, i))
-      .join('');
-  } else if (!q.length && hasActiveFilters) {
-    // Apply filters to loaded pokemon for filter-only search
-    const filteredPokemon = loadedPokemons.filter(pokemon => {
-      // Type filter
-      if (filters.type) {
-        const hasType = pokemon.types.some(type => type.type.name === filters.type);
-        if (!hasType) return false;
-      }
-      
-      // Generation filter  
-      if (filters.generation) {
-        if (!isInGeneration(pokemon.id, filters.generation)) return false;
-      }
-      
-      // Stats filter
-      if (filters.minStats > 200) {
-        const totalStats = pokemon.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
-        if (totalStats < filters.minStats) return false;
-      }
-      
-      return true;
-    });
-    
-    searchResults = filteredPokemon;
-    container.innerHTML = filteredPokemon
-      .map((p, i) => renderCardTemplate(p, i))
-      .join('');
-  }
+function showDefaultView() {
+  // Show the default loaded Pokemon (first 20 from API)
+  container.innerHTML = loadedPokemons
+    .map((p, i) => renderCardTemplate(p, i))
+    .join('');
+  searchResults = loadedPokemons;
   toggleLoading(false);
+}
+
+async function performApiBasedSearch(query, hasFilters) {
+  try {
+    let pokemonCandidates = [];
+
+    // Step 1: Get initial candidate list
+    if (query && query.length >= 3) {
+      // For name searches, use fuzzy matching on the full list
+      const nameMatches = fuzzySearchPokemons(allPokemonList, query);
+      pokemonCandidates = nameMatches.slice(0, 200); // Limit for performance
+    } else {
+      // For filter-only searches, get a broader range of Pokemon
+      pokemonCandidates = allPokemonList.slice(0, 500);
+    }
+
+    // Step 2: Fetch detailed data for candidates
+    console.log(`Fetching details for ${pokemonCandidates.length} Pokemon candidates...`);
+    const candidateUrls = pokemonCandidates.map(p => p.url);
+    const detailedCandidates = await fetchDetails(candidateUrls);
+
+    // Step 3: Apply filters to detailed data
+    let filteredResults = detailedCandidates;
+    if (hasFilters) {
+      filteredResults = await applyDetailedFilters(detailedCandidates);
+    }
+
+    // Step 4: Store and display results
+    currentFilteredResults = filteredResults;
+    currentPage = 0;
+
+    // Display first batch (20 Pokemon)
+    const batchSize = 20;
+    const firstBatch = filteredResults.slice(0, batchSize);
+
+    // Update search results for overlay navigation
+    searchResults = firstBatch;
+
+    // Render results
+    container.innerHTML = firstBatch
+      .map((p, i) => renderCardTemplate(p, i))
+      .join('');
+
+    // Update pagination state
+    hasMoreResults = filteredResults.length > batchSize;
+    currentPage = 1;
+
+    console.log(`Search completed: ${filteredResults.length} total results, showing first ${firstBatch.length}`);
+
+    if (filteredResults.length === 0) {
+      showNoResults();
+    } else {
+      updateLoadMoreButton();
+    }
+
+    toggleLoading(false);
+
+  } catch (error) {
+    console.error("API-based search failed:", error);
+    showNoResults();
+  }
 }
 
 function showNoResults() {
@@ -445,7 +384,7 @@ function updateLoadMoreButton() {
     if (hasMoreResults) {
       btn.textContent = "Load More Filtered Results";
       btn.disabled = false;
-      btn.onclick = () => loadFilteredResults(getQuery(), false);
+      btn.onclick = () => loadMoreFilteredResults();
       console.log("Button set to: Load More Filtered Results");
     } else {
       btn.textContent = "No More Results";
@@ -781,6 +720,107 @@ function formatStatName(statType) {
     'total': 'Total'
   };
   return statNames[statType] || statType;
+}
+
+// Fuzzy Search Implementation
+function levenshteinDistance(str1, str2) {
+  const matrix = [];
+
+  // Initialize first row and column
+  for (let i = 0; i <= str2.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= str1.length; j++) {
+    matrix[0][j] = j;
+  }
+
+  // Fill in the matrix
+  for (let i = 1; i <= str2.length; i++) {
+    for (let j = 1; j <= str1.length; j++) {
+      if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // substitution
+          matrix[i][j - 1] + 1,     // insertion
+          matrix[i - 1][j] + 1      // deletion
+        );
+      }
+    }
+  }
+
+  return matrix[str2.length][str1.length];
+}
+
+function fuzzySearchPokemons(pokemonList, query) {
+  const queryLower = query.toLowerCase();
+  const results = [];
+
+  pokemonList.forEach(pokemon => {
+    const name = pokemon.name.toLowerCase();
+
+    // Exact match (highest priority)
+    if (name.includes(queryLower)) {
+      results.push({
+        pokemon: pokemon,
+        score: 0,
+        matchType: 'exact'
+      });
+      return;
+    }
+
+    // Calculate fuzzy match score
+    const distance = levenshteinDistance(queryLower, name);
+    const maxLength = Math.max(queryLower.length, name.length);
+    const similarity = 1 - (distance / maxLength);
+
+    // Only include results with reasonable similarity
+    if (similarity >= 0.6) {
+      results.push({
+        pokemon: pokemon,
+        score: distance,
+        matchType: 'fuzzy',
+        similarity: similarity
+      });
+    }
+
+    // Also check if query is a substring with small typos
+    for (let i = 0; i <= name.length - queryLower.length; i++) {
+      const substring = name.substring(i, i + queryLower.length);
+      const substringDistance = levenshteinDistance(queryLower, substring);
+
+      if (substringDistance <= 2 && substringDistance < distance) {
+        results.push({
+          pokemon: pokemon,
+          score: substringDistance,
+          matchType: 'substring',
+          similarity: 1 - (substringDistance / queryLower.length)
+        });
+      }
+    }
+  });
+
+  // Remove duplicates and sort by score (lower is better for exact/fuzzy)
+  const uniqueResults = new Map();
+  results.forEach(result => {
+    const key = result.pokemon.name;
+    if (!uniqueResults.has(key) || uniqueResults.get(key).score > result.score) {
+      uniqueResults.set(key, result);
+    }
+  });
+
+  // Sort by match type priority and then by score
+  const sortedResults = Array.from(uniqueResults.values()).sort((a, b) => {
+    // Prioritize exact matches
+    if (a.matchType === 'exact' && b.matchType !== 'exact') return -1;
+    if (b.matchType === 'exact' && a.matchType !== 'exact') return 1;
+
+    // Then by score (lower distance is better)
+    return a.score - b.score;
+  });
+
+  // Limit results to top 50 for performance
+  return sortedResults.slice(0, 50).map(result => result.pokemon);
 }
 
 setup();
